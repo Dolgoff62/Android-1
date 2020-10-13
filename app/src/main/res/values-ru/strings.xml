@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">НМедиа</string>
-    <string name="nmedia">НМедиа!</string>
+    <string name="netology_logo">Логотип Нетологии</string>
+    <string name="number_of_favorites">110К</string>
+    <string name="number_of_views">777К</string>
+    <string name="number_of_share">15</string>
+    <string name="views">Просмотры</string>
+    <string name="to_share">Поделиться</string>
+    <string name="favorite_button">Нравится</string>
+    <string name="menu_button">Меню</string>
+
 </resources>
