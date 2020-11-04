@@ -8,5 +8,12 @@
     <string name="to_share">Поделиться</string>
     <string name="like_button">Нравится</string>
     <string name="menu_button">Меню</string>
-
+    <string name="enter_text">Введите текст</string>
+    <string name="enter_confirmation">Подтверждение</string>
+    <string name="menu_item_edit">Редактирование</string>
+    <string name="menu_item_delete">Удаление</string>
+    <string name="error_empty_content">Контент не может быть пустым</string>
+    <string name="user_name">Дмитрий Долгов</string>
+    <string name="edit_image">Картинка редактирование</string>
+    <string name="undo_editing">Отмена редактирования</string>
 </resources>

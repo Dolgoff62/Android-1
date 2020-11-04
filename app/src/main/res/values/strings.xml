@@ -8,4 +8,12 @@
     <string name="to_share">To share</string>
     <string name="like_button">Favorite</string>
     <string name="menu_button">Menu Button</string>
+    <string name="enter_text">Enter text</string>
+    <string name="enter_confirmation">Enter the Confirmation</string>
+    <string name="menu_item_edit">Edit</string>
+    <string name="menu_item_delete">Delete</string>
+    <string name="error_empty_content">Content cannot be empty</string>
+    <string name="user_name">Dmitriy Dolgov</string>
+    <string name="edit_image">Edit Image</string>
+    <string name="undo_editing">Undo editing</string>
 </resources>
