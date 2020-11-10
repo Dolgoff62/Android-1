@@ -46,16 +46,10 @@ class PostViewHolder (
             tvAuthorPost.text = post.author
             published.text = post.published
             content.text = post.content
-            numberOfLikes.text = Utils.formatLikes(post.numberOfLikes)
-            numberOfShare.text = Utils.formatLikes(post.numberOfShare)
+            likeButton.text = Utils.formatLikes(post.numberOfLikes)
+            toShareButton.text = Utils.formatLikes(post.numberOfShare)
             numberOfViews.text = Utils.formatLikes(post.numberOfViews)
-            likeButton.setImageResource(
-                if (post.likeByMe) {
-                    R.drawable.ic_baseline_favorite_24
-                } else {
-                    R.drawable.ic_baseline_favorite_border_24
-                }
-            )
+            likeButton.isChecked = post.likeByMe
 
             ibMenu.setOnClickListener {
                 PopupMenu(it.context, it).apply {
