@@ -1,28 +1,32 @@
 package ru.netology.nmedia.activity
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.text.TextUtils
-import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.card_post.*
 import ru.netology.nmedia.R
-import ru.netology.nmedia.databinding.ActivityMainBinding
-import ru.netology.nmedia.viewmodel.PostViewModel
-import ru.netology.nmedia.adapter.PostAdapter
 import ru.netology.nmedia.adapter.OnItemClickListener
+import ru.netology.nmedia.adapter.PostAdapter
+import ru.netology.nmedia.databinding.ActivityMainBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.Utils
+import ru.netology.nmedia.viewmodel.PostViewModel
 
 class MainActivity : AppCompatActivity() {
+    private val viewModel: PostViewModel by viewModels()
+    private val newPostRequestCode = 1
+    private val editPostRequestCode = 1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val viewModel: PostViewModel by viewModels()
-        val adapter = PostAdapter(object: OnItemClickListener {
+        val adapter = PostAdapter(object : OnItemClickListener {
 
             override fun onLike(post: Post) {
                 viewModel.likeById(post.id)
@@ -30,9 +34,22 @@ class MainActivity : AppCompatActivity() {
 
             override fun onShare(post: Post) {
                 viewModel.toShareById(post.id)
+                val intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, post.content)
+                    type = "text/plain"
+                }
+
+                val shareIntent =
+                    Intent.createChooser(intent, getString(R.string.chooser_share_post))
+                startActivity(shareIntent)
             }
 
             override fun onEdit(post: Post) {
+                val intent = Intent(this@MainActivity, EditPostActivity::class.java)
+                intent.putExtra("content", post.content)
+                intent.putExtra("videoLink", post.video)
+                startActivityForResult(intent, editPostRequestCode)
                 viewModel.edit(post)
             }
 
@@ -40,8 +57,19 @@ class MainActivity : AppCompatActivity() {
                 viewModel.deleteById(post.id)
             }
 
-            override fun onCancelEdit(post: Post) {
-                viewModel.cancelEdit()
+            override fun onPlayVideo(post: Post) {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.video))
+                val playVideoValidation = Utils.startIntent(this@MainActivity, intent)
+                if (!playVideoValidation) {
+                    Toast.makeText(
+                        this@MainActivity,
+                        getString(R.string.error_play_video_validation),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return
+                } else {
+                    startActivity(intent)
+                }
             }
         })
 
@@ -50,46 +78,36 @@ class MainActivity : AppCompatActivity() {
             adapter.submitList(posts)
         })
 
-        viewModel.edited.observe(this) {
-            if (it.id == 0L) {
-                return@observe
-            }
-            binding.tvPostOnUndoEditing.text = it.content
-            group.visibility = View.VISIBLE
-            with(binding.etInputArea) {
-                requestFocus()
-                setText(it.content)
-            }
+        binding.fabAddNewPost.setOnClickListener {
+            val intent = Intent(this@MainActivity, NewPostActivity::class.java)
+            startActivityForResult(intent, newPostRequestCode)
         }
+    }
 
-        binding.ibConfirmation.setOnClickListener {
-            with(binding.etInputArea) {
-                if (TextUtils.isEmpty(text)) {
-                    Toast.makeText(
-                        this@MainActivity,
-                        context.getString(R.string.error_empty_content),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    return@setOnClickListener
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            newPostRequestCode -> {
+                if (resultCode != Activity.RESULT_OK) {
+                    return
                 }
-
-                viewModel.changeContent(text.toString())
-                viewModel.postCreation()
-
-                setText("")
-                group.visibility = View.GONE
-                clearFocus()
-                Utils.hideKeyboard(this)
+                data?.extras.let {
+                    val postContent = it!!["content"].toString()
+                    val videoLink = it!!["videoLink"].toString()
+                    viewModel.changeContent(postContent, videoLink)
+                    viewModel.postCreation()
+                }
             }
-        }
-
-        binding.ibCancelEditing.setOnClickListener {
-            with(binding.etInputArea) {
-                viewModel.cancelEdit()
-                setText("")
-                group.visibility = View.GONE
-                clearFocus()
-                Utils.hideKeyboard(this)
+            editPostRequestCode -> {
+                if (resultCode != Activity.RESULT_OK) {
+                    return
+                } else {
+                    data?.extras.let {
+                        val postContent = it!!["content"].toString()
+                        val videoLink = it!!["videoLink"].toString()
+                        viewModel.changeContent(postContent, videoLink)
+                    }
+                }
             }
         }
     }

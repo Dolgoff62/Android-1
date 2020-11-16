@@ -16,4 +16,10 @@
     <string name="user_name">Dmitriy Dolgov</string>
     <string name="edit_image">Edit Image</string>
     <string name="undo_editing">Undo editing</string>
+    <string name="chooser_share_post">Share post with..</string>
+    <string name="add_post">Add new post</string>
+    <string name="cancelEditing">Cancel editing</string>
+    <string name="enter_video_link">Enter your video link here</string>
+    <string name="error_url_validation">invalid url</string>
+    <string name="error_play_video_validation">Something went wrong! The video cannot be played!!!</string>
 </resources>

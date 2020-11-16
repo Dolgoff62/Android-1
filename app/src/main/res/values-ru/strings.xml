@@ -16,4 +16,10 @@
     <string name="user_name">Дмитрий Долгов</string>
     <string name="edit_image">Картинка редактирование</string>
     <string name="undo_editing">Отмена редактирования</string>
+    <string name="chooser_share_post">Поделиться постом с помощью..</string>
+    <string name="add_post">Добавление нового поста</string>
+    <string name="cancelEditing">Отмена редактирования</string>
+    <string name="enter_video_link">Введите ссылку на видео здесь</string>
+    <string name="error_url_validation">некорректная ссылка</string>
+    <string name="error_play_video_validation">Что-то пошло не так! Не удается запустить показ видео!!!</string>
 </resources>

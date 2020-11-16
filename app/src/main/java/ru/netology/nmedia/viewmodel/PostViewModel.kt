@@ -15,7 +15,8 @@ private val empty = Post(
     published = "",
     numberOfLikes = 0,
     numberOfShare = 0,
-    numberOfViews = 0
+    numberOfViews = 0,
+    video = ""
 )
 
 class PostViewModel : ViewModel() {
@@ -34,12 +35,13 @@ class PostViewModel : ViewModel() {
         edited.value = post
     }
 
-    fun changeContent(content: String) {
+    fun changeContent(content: String, videoLink: String) {
         val text = content.trim()
-        if (edited.value?.content == text) {
+        val link = videoLink.trim()
+        if (edited.value?.content == text && edited.value?.video == link) {
             return
         }
-        edited.value = edited.value?.copy(content = text)
+        edited.value = edited.value?.copy(content = text, video = link)
     }
 
     fun deleteById(id: Long) = repository.deleteById(id)
@@ -47,8 +49,4 @@ class PostViewModel : ViewModel() {
     fun likeById(id: Long) = repository.likeById(id)
 
     fun toShareById(id: Long) = repository.toShareById(id)
-
-    fun cancelEdit() {
-        edited.value = edited.value
-    }
 }

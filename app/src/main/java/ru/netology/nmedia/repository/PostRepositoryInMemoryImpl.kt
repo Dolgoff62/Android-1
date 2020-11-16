@@ -20,7 +20,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
             likeByMe = false,
             numberOfLikes = 999_999_999,
             numberOfShare = 1,
-            numberOfViews = 1_500_000
+            numberOfViews = 1_500_000,
+            video = ""
         ),
         Post(
             id = nextId++,
@@ -31,7 +32,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
             likeByMe = false,
             numberOfLikes = 12,
             numberOfShare = 5,
-            numberOfViews = 1_000
+            numberOfViews = 1_000,
+            video = ""
         ),
         Post(
             id = nextId++,
@@ -42,7 +44,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
             likeByMe = false,
             numberOfLikes = 50,
             numberOfShare = 11,
-            numberOfViews = 1_045
+            numberOfViews = 1_045,
+            video = ""
         ),
         Post(
             id = nextId++,
@@ -53,7 +56,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
             likeByMe = false,
             numberOfLikes = 5,
             numberOfShare = 10,
-            numberOfViews = 900
+            numberOfViews = 900,
+            video = ""
         ),
         Post(
             id = nextId++,
@@ -64,7 +68,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
             likeByMe = false,
             numberOfLikes = 777,
             numberOfShare = 754,
-            numberOfViews = 1_000_000
+            numberOfViews = 1_000_000,
+            video = "https://www.youtube.com/watch?v=Bw6HfM402bM"
         )
     )
 
@@ -75,21 +80,22 @@ class PostRepositoryInMemoryImpl : PostRepository {
     override fun postCreation(post: Post) {
 
         if (post.id == 0L) {
-            posts = listOf(post.copy(
+            posts = listOf(
+                post.copy(
                     id = nextId++,
                     author = currentUser,
                     published = Utils.localDateTime(),
                     likeByMe = false,
                     numberOfLikes = 0,
                     numberOfShare = 0,
-                    numberOfViews = 0
-                    )
+                    numberOfViews = 0,
+                )
             ) + posts
             data.value = posts
         }
 
         posts = posts.map {
-            if (it.id != post.id) it else it.copy(content = post.content)
+            if (it.id != post.id) it else it.copy(content = post.content, video = post.video)
         }
         data.value = posts
     }
