@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.card_post.*
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.OnItemClickListener
 import ru.netology.nmedia.adapter.PostAdapter
@@ -16,6 +15,7 @@ import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.Utils
 import ru.netology.nmedia.viewmodel.PostViewModel
 
+@Suppress("DUPLICATE_LABEL_IN_WHEN")
 class MainActivity : AppCompatActivity() {
     private val viewModel: PostViewModel by viewModels()
     private val newPostRequestCode = 1
@@ -92,8 +92,8 @@ class MainActivity : AppCompatActivity() {
                     return
                 }
                 data?.extras.let {
-                    val postContent = it!!["content"].toString()
-                    val videoLink = it!!["videoLink"].toString()
+                    val postContent = it?.get("content").toString()
+                    val videoLink = it?.get("videoLink").toString()
                     viewModel.changeContent(postContent, videoLink)
                     viewModel.postCreation()
                 }
@@ -103,8 +103,8 @@ class MainActivity : AppCompatActivity() {
                     return
                 } else {
                     data?.extras.let {
-                        val postContent = it!!["content"].toString()
-                        val videoLink = it!!["videoLink"].toString()
+                        val postContent = it?.get("content").toString()
+                        val videoLink = it?.get("videoLink").toString()
                         viewModel.changeContent(postContent, videoLink)
                     }
                 }

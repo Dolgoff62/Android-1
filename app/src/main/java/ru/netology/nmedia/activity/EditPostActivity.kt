@@ -15,8 +15,8 @@ class EditPostActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val arguments = intent.extras
-        val textForEdit = arguments!!["content"].toString()
-        val videoLinkForEdit = arguments["videoLink"].toString()
+        val textForEdit = arguments?.get("content").toString()
+        val videoLinkForEdit = arguments?.get("videoLink").toString()
         val binding = ActivityEditPostBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
