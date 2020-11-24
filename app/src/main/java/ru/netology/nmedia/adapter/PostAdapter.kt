@@ -18,6 +18,7 @@ interface OnItemClickListener {
     fun onEdit(post: Post) {}
     fun onDelete(post: Post) {}
     fun onPlayVideo(post: Post) {}
+    fun onPost(post: Post) {}
 }
 
 class PostAdapter(
@@ -87,6 +88,10 @@ class PostViewHolder(
 
             postVideo.setOnClickListener {
                 onItemClickListener.onPlayVideo(post)
+            }
+
+            content.setOnClickListener {
+                onItemClickListener.onPost(post)
             }
         }
     }

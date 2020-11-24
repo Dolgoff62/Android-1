@@ -45,22 +45,19 @@ class PostRepositoryFilesImpl(
                     numberOfViews = 0,
                 )
             ) + posts
-            data.value = posts
-            sync()
+            update()
             return
         }
 
         posts = posts.map {
             if (it.id != post.id) it else it.copy(content = post.content, video = post.video)
         }
-        data.value = posts
-        sync()
+        update()
     }
 
     override fun deleteById(id: Long) {
         posts = posts.filter { it.id != id }
-        data.value = posts
-        sync()
+        update()
     }
 
     override fun likeById(id: Long) {
@@ -74,25 +71,28 @@ class PostRepositoryFilesImpl(
                 )
             }
         }
-        data.value = posts
-        sync()
+        update()
     }
 
     override fun toShareById(id: Long) {
         posts = posts.map {
-            if (it.id != id) {
-                it
-            } else {
-                it.copy(numberOfShare = it.numberOfShare + 1)
-            }
+            if (it.id == id) it.copy(numberOfShare = it.numberOfShare + 1) else it
         }
-        data.value = posts
-        sync()
+        update()
     }
 
     private fun sync() {
         context.openFileOutput("posts.json", Context.MODE_PRIVATE).bufferedWriter().use {
             it.write(gson.toJson(posts))
         }
+    }
+
+    override fun findPostById(id: Long): Post {
+        return posts.first { it.id == id }
+    }
+
+    private fun update() {
+        data.value = posts
+        sync()
     }
 }

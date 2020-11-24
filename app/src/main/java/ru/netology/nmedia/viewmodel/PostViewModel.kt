@@ -32,10 +32,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         edited.value = empty
     }
 
-    fun edit(post: Post) {
-        edited.value = post
-    }
-
     fun changeContent(content: String, videoLink: String) {
         val text = content.trim()
         val link = videoLink.trim()
@@ -50,4 +46,15 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     fun likeById(id: Long) = repository.likeById(id)
 
     fun toShareById(id: Long) = repository.toShareById(id)
+
+    fun searchPost(id: Long): Post {
+        return repository.findPostById(id)
+    }
+
+    fun searchAndChangePost(id: Long) {
+        val thisPost = repository.findPostById(id)
+        val editedPost =
+            thisPost.copy(content = edited.value?.content.toString(), video = edited.value?.video)
+        repository.postCreation(editedPost)
+    }
 }

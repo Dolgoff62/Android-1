@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.MainActivity">
+    tools:context=".activity.MainFragment">
 
      <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPosts"
@@ -14,7 +14,7 @@
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="0dp"
-        tools:listitem="@layout/card_post" />
+        tools:listitem="@layout/fragment_post_card" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add_new_post"

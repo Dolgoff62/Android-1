@@ -1,9 +1,9 @@
 package ru.netology.nmedia.dto
 
-import android.provider.MediaStore
-import android.widget.VideoView
-import java.net.URL
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class Post(
     val id: Long,
     val avatar: Int,
@@ -15,4 +15,4 @@ data class Post(
     val numberOfLikes: Int,
     val numberOfShare: Int,
     val numberOfViews: Int
-)
+) : Parcelable

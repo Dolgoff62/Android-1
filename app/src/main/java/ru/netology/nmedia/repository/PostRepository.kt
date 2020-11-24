@@ -9,4 +9,5 @@ interface PostRepository {
     fun toShareById(id: Long)
     fun postCreation(post: Post)
     fun deleteById(id: Long)
+    fun findPostById(id: Long): Post
 }

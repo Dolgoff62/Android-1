@@ -2,6 +2,7 @@ package ru.netology.nmedia.utils
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.text.TextUtils.isEmpty
 import android.util.Patterns
 import android.view.View
@@ -10,6 +11,8 @@ import androidx.annotation.Nullable
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.floor
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
 
 class Utils {
@@ -57,4 +60,15 @@ class Utils {
             return false
         }
     }
+
+    object StringArg: ReadWriteProperty<Bundle, String?> {
+
+        override fun setValue(thisRef: Bundle, property: KProperty<*>, value: String?) {
+            thisRef.putString(property.name, value)
+        }
+
+        override fun getValue(thisRef: Bundle, property: KProperty<*>): String? =
+            thisRef.getString(property.name)
+    }
+
 }
