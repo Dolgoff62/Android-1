@@ -32,7 +32,8 @@ class NewPostFragment : Fragment() {
         val binding = FragmentNewPostBinding.inflate(
             inflater,
             container,
-            false)
+            false
+        )
 
         arguments?.textArg
             ?.let(binding.etInputArea::setText)

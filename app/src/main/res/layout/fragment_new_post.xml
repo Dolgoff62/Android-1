@@ -13,6 +13,7 @@
         android:layout_height="600dp"
         android:autofillHints="false"
         android:background="@android:color/transparent"
+        android:focusable="true"
         android:gravity="start|top"
         android:inputType="textMultiLine"
         android:padding="@dimen/common_spacing"

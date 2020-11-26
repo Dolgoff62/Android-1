@@ -39,7 +39,6 @@ class PostCardFragment : Fragment() {
         )
 
         binding.apply {
-            logo.setImageResource(post.avatar)
             tvAuthorPost.text = post.author
             published.text = post.published
             content.text = post.content

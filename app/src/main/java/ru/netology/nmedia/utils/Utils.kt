@@ -42,7 +42,8 @@ class Utils {
         }
 
         fun urlValidChecker(link: String): Boolean {
-            return Patterns.WEB_URL.matcher(link).matches()
+            val videoLink = link.trim()
+            return Patterns.WEB_URL.matcher(videoLink).matches()
         }
 
         fun startIntent(context: Context, @Nullable intent: Intent?): Boolean {
@@ -61,7 +62,7 @@ class Utils {
         }
     }
 
-    object StringArg: ReadWriteProperty<Bundle, String?> {
+    object StringArg : ReadWriteProperty<Bundle, String?> {
 
         override fun setValue(thisRef: Bundle, property: KProperty<*>, value: String?) {
             thisRef.putString(property.name, value)

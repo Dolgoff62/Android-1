@@ -43,7 +43,6 @@ class PostViewHolder(
 
     fun bind(post: Post) {
         binding.apply {
-            logo.setImageResource(post.avatar)
             tvAuthorPost.text = post.author
             published.text = post.published
             content.text = post.content
