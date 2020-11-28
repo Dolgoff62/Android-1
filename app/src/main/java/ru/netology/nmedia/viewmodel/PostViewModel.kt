@@ -58,7 +58,11 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     fun searchAndChangePost(id: Long) {
         val thisPost = repository.findPostById(id)
         val editedPost =
-            thisPost.copy(content = edited.value?.content.toString(), video = edited.value?.video)
+            thisPost.copy(
+                id = id,
+                content = edited.value?.content.toString(),
+                video = edited.value?.video.toString()
+            )
         repository.postCreation(editedPost)
     }
 }
