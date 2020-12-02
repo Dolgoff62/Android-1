@@ -4,14 +4,21 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.os.Build
+import android.widget.RemoteViews
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.TaskStackBuilder
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import ru.netology.nmedia.R
-import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.activity.AppActivity
 import kotlin.random.Random
 
 
@@ -41,7 +48,12 @@ class FCMService : FirebaseMessagingService() {
             when (it) {
                 "LIKE" -> handleLike(gson.fromJson(message.data[content], Like::class.java))
                 "SHARE" -> handleShare(gson.fromJson(message.data[content], Share::class.java))
-                "newPost" -> handleNewPost(gson.fromJson(message.data[content], NewPost::class.java))
+                "newPost" -> handleNewPost(
+                    gson.fromJson(
+                        message.data[content],
+                        NewPost::class.java
+                    )
+                )
                 else -> handleElse(gson.fromJson(message.data[content], Else::class.java))
             }
         }
@@ -61,6 +73,29 @@ class FCMService : FirebaseMessagingService() {
             )
             .setStyle(NotificationCompat.BigTextStyle()
                 .bigText(content.text))
+
+        val remoteViews = RemoteViews(packageName, R.layout.notification)
+
+        remoteViews.setTextViewText(
+            R.id.tvNotificationTitle,
+            getString(
+                R.string.notification_new_post,
+                content.author
+            )
+        )
+        remoteViews.setTextViewText(R.id.tvNotification, content.text)
+        val resultIntent = Intent(this, AppActivity::class.java)
+
+        val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
+            addNextIntentWithParentStack(resultIntent)
+            getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+        }
+
+        val notification = NotificationCompat.Builder(this, channelId)
+            .setContentIntent(resultPendingIntent)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setCustomContentView(remoteViews)
+            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .build()
 
