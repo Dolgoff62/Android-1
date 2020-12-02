@@ -7,13 +7,14 @@ import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.repository.PostRepository
 import ru.netology.nmedia.repository.PostRepositorySQLiteImpl
+import ru.netology.nmedia.utils.Utils
 
 private val empty = Post(
     id = 0,
     content = "",
     author = "",
     likeByMe = false,
-    published = "",
+    published = Utils.localDateTime(),
     numberOfLikes = 0,
     numberOfShare = 0,
     numberOfViews = 0,
