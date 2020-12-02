@@ -2,10 +2,6 @@ package ru.netology.nmedia.service
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Context
-import android.os.Build
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -64,15 +60,6 @@ class FCMService : FirebaseMessagingService() {
     }
 
     private fun handleNewPost(content: NewPost) {
-        val notification = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.drawable.netology)
-            .setContentTitle(
-                getString(R.string.notification_new_post,
-                content.author
-                )
-            )
-            .setStyle(NotificationCompat.BigTextStyle()
-                .bigText(content.text))
 
         val remoteViews = RemoteViews(packageName, R.layout.notification)
 
@@ -158,7 +145,6 @@ data class NewPost(
     val id: Long,
     val author: String,
     val text: String,
-    val published: String
 )
 
 data class Like(
