@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 30
@@ -68,6 +69,8 @@ dependencies {
     kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
+    implementation platform('com.google.firebase:firebase-bom:26.0.0')
+    implementation "com.google.firebase:firebase-messaging-ktx"
 
     testImplementation "androidx.fragment:fragment-testing:$frag_version"
     testImplementation "androidx.arch.core:core-testing:$arch_version"

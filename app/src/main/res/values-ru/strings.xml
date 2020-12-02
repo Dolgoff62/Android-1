@@ -22,4 +22,10 @@
     <string name="enter_video_link">Введите ссылку на видео здесь</string>
     <string name="error_url_validation">некорректная ссылка</string>
     <string name="error_play_video_validation">Что-то пошло не так! Не удается запустить показ видео!!!</string>
+    <string name="channel_remote_name">Уведомления с сервиса</string>
+    <string name="channel_remote_description">Уведомления с удаленного сервиса</string>
+    <string name="notification_user_liked">Пользователю %1$s нравится %2$s\ пост</string>
+    <string name="notification_else_action">Кое-что изменилось в посту %1$s. Заходи и посмотри.</string>
+    <string name="notification_user_share">Пользователь %1$s поделился постом %2$s</string>
+    <string name="notification_new_post">Пользователь %1$s создал новый пост</string>
 </resources>
