@@ -32,6 +32,15 @@ interface PostDao {
     )
     fun toShareById(id: Long)
 
+    @Query(
+        """
+        UPDATE PostEntity SET
+            numberOfViews = numberOfViews + 1
+        WHERE id = :id
+        """
+    )
+    fun increasingNumberOfViews(id: Long)
+
     @Insert
     fun insert(post: PostEntity)
 
@@ -39,7 +48,12 @@ interface PostDao {
     fun updateContentById(id: Long, content: String, video: String, edited: String)
 
     fun postCreation(post: PostEntity) =
-        if (post.id == 0L) insert(post) else updateContentById(post.id, post.content, post.video, post.edited)
+        if (post.id == 0L) insert(post) else updateContentById(
+            post.id,
+            post.content,
+            post.video,
+            post.edited
+        )
 
 
     @Query("""DELETE FROM PostEntity WHERE id = :id""")

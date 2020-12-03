@@ -58,6 +58,8 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         return repository.findPostById(id)
     }
 
+    fun increasingNumberOfViews(id: Long) = repository.increasingNumberOfViews(id)
+
     fun searchAndChangePost(id: Long) {
         val thisPost = repository.findPostById(id)
         val editedPost =

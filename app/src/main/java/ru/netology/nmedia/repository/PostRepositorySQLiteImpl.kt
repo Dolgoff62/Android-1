@@ -34,4 +34,8 @@ class PostRepositorySQLiteImpl(
     override fun findPostById(id: Long): Post {
         return dao.findPostById(id)
     }
+
+    override fun increasingNumberOfViews(id: Long) {
+        return dao.increasingNumberOfViews(id)
+    }
 }

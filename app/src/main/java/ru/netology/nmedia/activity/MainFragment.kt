@@ -85,6 +85,7 @@ class MainFragment : Fragment() {
             }
 
             override fun onPost(post: Post) {
+                viewModel.increasingNumberOfViews(post.id)
                 val bundle = Bundle().apply {
                     putParcelable("post", post)
                 }

@@ -10,4 +10,6 @@ interface PostRepository {
     fun postCreation(post: Post)
     fun deleteById(id: Long)
     fun findPostById(id: Long): Post
+    fun increasingNumberOfViews(id: Long)
+
 }

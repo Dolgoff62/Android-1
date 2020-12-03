@@ -128,7 +128,7 @@
         app:layout_constraintTop_toTopOf="@id/likeButton" />
 
     <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/viewsButton"
+        android:id="@+id/ivViews"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"

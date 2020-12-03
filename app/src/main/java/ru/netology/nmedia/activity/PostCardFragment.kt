@@ -27,7 +27,7 @@ class PostCardFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
 
         val post = arguments?.getParcelable<Post>("post") as Post
@@ -37,39 +37,38 @@ class PostCardFragment : Fragment() {
             container,
             false
         )
-
         binding.apply {
-            tvAuthorPost.text = post.author
-            published.text = post.published
+            tvAuthorPostFragment.text = post.author
+            publishedPostFragment.text = post.published
             if (post.edited == "") {
-                tvEditedFragment.visibility = View.GONE
+                tvEditedPostFragment.visibility = View.GONE
             } else {
-                tvEditedFragment.text = post.edited
-                tvEditedFragment.visibility = View.VISIBLE
+                tvEditedPostFragment.text = post.edited
+                tvEditedPostFragment.visibility = View.VISIBLE
             }
-            content.text = post.content
-            likeButton.text = Utils.formatLikes(post.numberOfLikes)
-            toShareButton.text = Utils.formatLikes(post.numberOfShare)
-            numberOfViews.text = Utils.formatLikes(post.numberOfViews)
-            likeButton.isChecked = post.likeByMe
+            contentPostFragment.text = post.content
+            likeButtonPostFragment.text = Utils.formatLikes(post.numberOfLikes)
+            toShareButtonPostFragment.text = Utils.formatLikes(post.numberOfShare)
+            numberOfViewsPostFragment.text = Utils.formatLikes(post.numberOfViews)
+            likeButtonPostFragment.isChecked = post.likeByMe
 
             if (post.video == "") {
-                postVideo.visibility = View.GONE
+                videoPostFragment.visibility = View.GONE
             } else {
-                postVideo.visibility = View.VISIBLE
+                videoPostFragment.visibility = View.VISIBLE
             }
         }
 
-        binding.likeButton.setOnClickListener {
+        binding.likeButtonPostFragment.setOnClickListener {
             viewModel.likeById(post.id)
             val updatedPost = viewModel.searchPost(post.id)
-            binding.likeButton.text = updatedPost.numberOfLikes.toString()
+            binding.likeButtonPostFragment.text = updatedPost.numberOfLikes.toString()
         }
 
-        binding.toShareButton.setOnClickListener {
+        binding.toShareButtonPostFragment.setOnClickListener {
             viewModel.toShareById(post.id)
             val updatedPost = viewModel.searchPost(post.id)
-            binding.toShareButton.text = updatedPost.numberOfShare.toString()
+            binding.toShareButtonPostFragment.text = updatedPost.numberOfShare.toString()
             val intent = Intent().apply {
                 action = Intent.ACTION_SEND
                 putExtra(Intent.EXTRA_TEXT, post.content)
@@ -80,7 +79,7 @@ class PostCardFragment : Fragment() {
             startActivity(shareIntent)
         }
 
-        binding.postVideo.setOnClickListener {
+        binding.videoPostFragment.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.video))
             val playVideoValidation = context?.let { Utils.startIntent(it, intent) }
             if (playVideoValidation == false) {
@@ -94,7 +93,7 @@ class PostCardFragment : Fragment() {
             startActivity(intent)
         }
 
-        binding.ibMenu.setOnClickListener {
+        binding.ibMenuPostFragment.setOnClickListener {
             PopupMenu(it.context, it).apply {
                 inflate(R.menu.menu_main)
                 setOnMenuItemClickListener { item ->
