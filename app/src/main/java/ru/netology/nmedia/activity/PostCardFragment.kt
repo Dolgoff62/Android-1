@@ -41,6 +41,12 @@ class PostCardFragment : Fragment() {
         binding.apply {
             tvAuthorPost.text = post.author
             published.text = post.published
+            if (post.edited == "") {
+                tvEditedFragment.visibility = View.GONE
+            } else {
+                tvEditedFragment.text = post.edited
+                tvEditedFragment.visibility = View.VISIBLE
+            }
             content.text = post.content
             likeButton.text = Utils.formatLikes(post.numberOfLikes)
             toShareButton.text = Utils.formatLikes(post.numberOfShare)

@@ -10,6 +10,7 @@ data class Post(
     val content: String,
     val video: String,
     val published: String,
+    val edited: String,
     val likeByMe: Boolean = false,
     val numberOfLikes: Int,
     val numberOfShare: Int,

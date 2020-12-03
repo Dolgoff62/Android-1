@@ -35,11 +35,11 @@ interface PostDao {
     @Insert
     fun insert(post: PostEntity)
 
-    @Query("UPDATE PostEntity SET content = :content, video = :video WHERE id = :id")
-    fun updateContentById(id: Long, content: String, video: String)
+    @Query("UPDATE PostEntity SET content = :content, video = :video, edited = :edited WHERE id = :id")
+    fun updateContentById(id: Long, content: String, video: String, edited: String)
 
     fun postCreation(post: PostEntity) =
-        if (post.id == 0L) insert(post) else updateContentById(post.id, post.content, post.video)
+        if (post.id == 0L) insert(post) else updateContentById(post.id, post.content, post.video, post.edited)
 
 
     @Query("""DELETE FROM PostEntity WHERE id = :id""")

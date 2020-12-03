@@ -73,7 +73,8 @@ class NewPostFragment : Fragment() {
                 } else {
                     viewModel.changeContent(
                         binding.etInputArea.text.toString(),
-                        binding.etPostVideoLink.text.toString()
+                        binding.etPostVideoLink.text.toString(),
+                        dateOfEditing = ""
                     )
                     viewModel.postCreation()
                     if (prefs != null) {

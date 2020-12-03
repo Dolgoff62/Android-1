@@ -15,6 +15,7 @@ private val empty = Post(
     author = "",
     likeByMe = false,
     published = Utils.localDateTime(),
+    edited = "",
     numberOfLikes = 0,
     numberOfShare = 0,
     numberOfViews = 0,
@@ -37,13 +38,14 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         edited.value = empty
     }
 
-    fun changeContent(content: String, videoLink: String) {
+    fun changeContent(content: String, videoLink: String, dateOfEditing: String) {
         val text = content.trim()
         val link = videoLink.trim()
+        val editing = dateOfEditing.trim()
         if (edited.value?.content == text && edited.value?.video == link) {
             return
         }
-        edited.value = edited.value?.copy(content = text, video = link)
+        edited.value = edited.value?.copy(content = text, video = link, edited = editing)
     }
 
     fun deleteById(id: Long) = repository.deleteById(id)
@@ -62,7 +64,8 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             thisPost.copy(
                 id = id,
                 content = edited.value?.content.toString(),
-                video = edited.value?.video.toString()
+                video = edited.value?.video.toString(),
+                edited = edited.value?.edited.toString()
             )
         repository.postCreation(editedPost)
     }

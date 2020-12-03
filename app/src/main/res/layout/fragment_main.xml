@@ -14,7 +14,7 @@
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="0dp"
-        tools:listitem="@layout/fragment_post_card" />
+        tools:listitem="@layout/card_post" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add_new_post"

@@ -45,6 +45,12 @@ class PostViewHolder(
         binding.apply {
             tvAuthorPost.text = post.author
             published.text = post.published
+            if (post.edited == "") {
+                tvEdited.visibility = View.GONE
+            } else {
+                tvEdited.text = post.edited
+                tvEdited.visibility = View.VISIBLE
+            }
             content.text = post.content
             likeButton.text = Utils.formatLikes(post.numberOfLikes)
             toShareButton.text = Utils.formatLikes(post.numberOfShare)

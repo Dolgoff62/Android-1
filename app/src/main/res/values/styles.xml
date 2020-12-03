@@ -25,5 +25,9 @@
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/colorDarkGrey</item>
     </style>
+    <style name="SmallLightGreyTextStyle">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/colorLightGrey</item>
+    </style>
 
 </resources>

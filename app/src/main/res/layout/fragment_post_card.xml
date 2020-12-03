@@ -50,6 +50,19 @@
             app:layout_constraintTop_toBottomOf="@id/tvAuthorPost"
             tools:text="@sample/posts.json/data/published" />
 
+        <TextView
+            android:id="@+id/tvEditedFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/common_spacing"
+            android:layout_marginEnd="@dimen/common_spacing"
+            android:layout_marginBottom="@dimen/common_spacing"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/barrierTop"
+            app:layout_constraintStart_toEndOf="@id/logo"
+            app:layout_constraintTop_toBottomOf="@id/published"
+            tools:text="@sample/posts.json/data/edited" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/ibMenu"
             style="@style/AppNormalButton"
