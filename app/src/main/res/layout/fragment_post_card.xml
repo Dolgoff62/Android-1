@@ -90,17 +90,6 @@
             app:layout_constraintTop_toBottomOf="@id/barrierTopPostFragment"
             tools:text="@sample/posts.json/data/content" />
 
-        <ImageButton
-            android:id="@+id/videoPostFragment"
-            android:layout_width="280dp"
-            android:layout_height="200dp"
-            android:src="@drawable/movies_icon"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@id/barrierBottomPostFragment"
-            app:layout_constraintStart_toStartOf="@id/contentPostFragment"
-            app:layout_constraintTop_toBottomOf="@id/contentPostFragment" />
-
-
         <com.google.android.material.button.MaterialButton
             android:id="@+id/likeButtonPostFragment"
             style="@style/AppCheckableButton"
@@ -117,46 +106,6 @@
             app:iconTint="@color/selector_like_color"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/barrierBottomPostFragment" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/toShareButtonPostFragment"
-            style="@style/AppNormalButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/common_spacing"
-            android:contentDescription="@string/to_share"
-            android:text="111"
-            android:textAppearance="@style/TextStyle"
-            android:textColor="@color/colorPrimary"
-            app:icon="@drawable/ic_baseline_share_24"
-            app:iconTint="@color/colorPrimary"
-            app:layout_constraintStart_toEndOf="@id/likeButtonPostFragment"
-            app:layout_constraintTop_toTopOf="@id/likeButtonPostFragment" />
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/viewsButtonPostFragment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/views"
-            android:padding="4dp"
-            android:scaleType="center"
-            app:layout_constraintEnd_toStartOf="@+id/numberOfViewsPostFragment"
-            app:layout_constraintTop_toTopOf="@id/numberOfViewsPostFragment"
-            app:srcCompat="@drawable/ic_baseline_remove_red_eye_24" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/numberOfViewsPostFragment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/common_spacing"
-            android:padding="4dp"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextStyle"
-            app:layout_constraintBottom_toBottomOf="@+id/toShareButtonPostFragment"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/barrierBottomPostFragment"
-            tools:text="@string/number_of_views" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrierTopPostFragment"

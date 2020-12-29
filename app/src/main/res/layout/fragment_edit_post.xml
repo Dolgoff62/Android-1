@@ -23,21 +23,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/etEditedPostVideoLink"
-        style="@style/LargeTextStyle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/common_spacing"
-        android:autofillHints="@android:string/copyUrl"
-        android:background="@drawable/edit_text_style"
-        android:hint="@string/enter_video_link"
-        android:inputType="textUri"
-        android:padding="@dimen/edit_text_padding"
-        app:layout_constraintBottom_toTopOf="@id/fabConfirmation"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabConfirmation"
         android:layout_width="wrap_content"
@@ -68,7 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="top"
-        app:constraint_referenced_ids="etEditedPostVideoLink"
+        app:constraint_referenced_ids="fabConfirmation, mbCancelEditing"
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="80dp" />
 

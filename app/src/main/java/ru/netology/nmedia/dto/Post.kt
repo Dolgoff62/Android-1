@@ -1,18 +1,14 @@
 package ru.netology.nmedia.dto
 
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import com.google.gson.annotations.SerializedName
 
-@Parcelize
 data class Post(
     val id: Long,
     val author: String,
     val content: String,
-    val video: String,
     val published: String,
-    val edited: String,
+    @SerializedName("likedByMe")
     val likeByMe: Boolean = false,
-    val numberOfLikes: Int,
-    val numberOfShare: Int,
-    val numberOfViews: Int
-) : Parcelable
+    @SerializedName("likes")
+    var numberOfLikes: Int,
+)
