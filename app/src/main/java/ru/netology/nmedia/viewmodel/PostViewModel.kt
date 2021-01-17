@@ -10,12 +10,14 @@ import ru.netology.nmedia.repository.PostRepository
 import ru.netology.nmedia.repository.PostRepositoryImpl
 import ru.netology.nmedia.util.SingleLiveEvent
 import java.io.IOException
+import java.util.concurrent.Executors
 import kotlin.concurrent.thread
 
 private val empty = Post(
     id = 0,
     content = "",
     author = "",
+    authorAvatar = "",
     likeByMe = false,
     published = "",
     numberOfLikes = 0
@@ -31,6 +33,8 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     val postCreated: LiveData<Unit>
         get() = _postCreated
 
+    private val executorService = Executors.newFixedThreadPool(64)
+
     var actualLikedByMe: MutableMap<Long, Boolean> = emptyMap<Long, Boolean>().toMutableMap()
 
     init {
@@ -38,29 +42,29 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun loadPosts() {
-        thread {
-            _data.postValue(FeedModel(loading = true))
-            try {
-                val posts = repository.getAll().map {
+        _data.postValue(FeedModel(loading = true))
+        repository.getAllAsync(object : PostRepository.GetAllCallback {
+            override fun onSuccess(posts: List<Post>) {
+                posts.map {
                     if (actualLikedByMe.containsKey(it.id)) {
                         actualLikedByMe[it.id]?.let { it1 -> it.copy(likeByMe = it1) }
                     } else {
                         it
                     }
                 }
+                _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
+            }
 
-                FeedModel(posts = posts as List<Post>, empty = posts.isEmpty())
-            } catch (e: IOException) {
-                println("$e")
-                FeedModel(error = true)
-            }.also(_data::postValue)
-        }
+            override fun onError(e: Exception) {
+                _data.postValue(FeedModel(error = true))
+            }
+        })
     }
 
     fun postCreation() {
         edited.value?.let {
             val post = edited.value!!
-            thread {
+            executorService.execute {
                 val newPost = repository.postCreation(post)
                 _postCreated.postValue(Unit)
                 _data.postValue(
@@ -75,7 +79,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     fun updatePost() {
         edited.value?.let {
             val post = edited.value!!
-            thread {
+            executorService.execute {
                 val updatedPost = repository.updatePost(post)
                 _data.postValue(
                     _data.value?.copy(posts = _data.value?.posts.orEmpty()
@@ -95,7 +99,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         edited.value = edited.value?.copy(id = postId, content = text)
     }
 
-    fun deleteById(id: Long) = thread {
+    fun deleteById(id: Long) = executorService.execute() {
         val old = _data.value?.posts.orEmpty()
         _data.postValue(
             _data.value?.copy(posts = _data.value?.posts.orEmpty()
@@ -109,7 +113,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun likeById(id: Long) = thread {
+    fun likeById(id: Long) = executorService.execute() {
         actualLikedByMe[id] = true
 
         val updatedPost = repository.likeById(id)
@@ -120,7 +124,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         )
     }
 
-    fun unlikeById(id: Long) = thread {
+    fun unlikeById(id: Long) = executorService.execute() {
         actualLikedByMe[id] = false
 
         val updatedPost = repository.unlikeById(id)
