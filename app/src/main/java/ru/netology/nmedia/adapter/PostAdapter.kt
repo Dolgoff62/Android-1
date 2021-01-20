@@ -7,6 +7,7 @@ import android.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
@@ -42,10 +43,32 @@ class PostViewHolder(
     fun bind(post: Post) {
         binding.apply {
             tvAuthorPost.text = post.author
+
+            val url = "http://10.0.2.2:9999/avatars/${post.authorAvatar}"
+            val urlAttach = "http://10.0.2.2:9999/images/${post.attachment?.url}"
+
+            if (post.authorAvatar != "") {
+                Glide.with(logo.context)
+                    .load(url)
+                    .circleCrop()
+                    .timeout(30_000)
+                    .into(logo)
+            }
+
             published.text = post.published
             content.text = post.content
             likeButton.text = Utils.formatLikes(post.numberOfLikes)
             likeButton.isChecked = post.likeByMe
+
+            if (post.attachment == null) {
+                binding.postImageAttachment.visibility = View.GONE
+            } else {
+                binding.postImageAttachment.visibility = View.VISIBLE
+                Glide.with(binding.postImageAttachment.context)
+                    .load(urlAttach)
+                    .timeout(30_000)
+                    .into(binding.postImageAttachment)
+            }
 
             ibMenu.setOnClickListener {
                 PopupMenu(it.context, it).apply {

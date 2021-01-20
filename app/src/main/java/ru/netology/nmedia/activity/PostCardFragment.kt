@@ -8,6 +8,7 @@ import android.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentPostCardBinding
 import ru.netology.nmedia.utils.Utils
@@ -35,50 +36,70 @@ class PostCardFragment : Fragment() {
         )
         binding.apply {
             tvAuthorPostFragment.text = post.author
+
+            val url = "http://10.0.2.2:9999/avatars/${post.authorAvatar}"
+            val urlAttach = "http://10.0.2.2:9999/images/${post.attachment?.url}"
+
+            if (post.authorAvatar != "") {
+                Glide.with(binding.logoPostFragment.context)
+                    .load(url)
+                    .circleCrop()
+                    .timeout(30_000)
+                    .into(binding.logoPostFragment)
+            }
+
             publishedPostFragment.text = post.published
             contentPostFragment.text = post.content
             likeButtonPostFragment.text = Utils.formatLikes(post.numberOfLikes)
             likeButtonPostFragment.isChecked = post.likeByMe
-        }
 
-        binding.likeButtonPostFragment.setOnClickListener {
-            if (!post.likeByMe) {
-                viewModel.likeById(post.id)
-            } else {
-                viewModel.unlikeById(post.id)
+            if (post.attachment != null) {
+                binding.fragmentPostImageAttachment.visibility = View.VISIBLE
+                Glide.with(binding.fragmentPostImageAttachment.context)
+                    .load(urlAttach)
+                    .timeout(30_000)
+                    .into(binding.fragmentPostImageAttachment)
             }
-            viewModel.data.observe(viewLifecycleOwner, {
-                post = viewModel.searchPost(post.id)
-                binding.likeButtonPostFragment.text = Utils.formatLikes(post.numberOfLikes)
-            })
-        }
 
-        binding.ibMenuPostFragment.setOnClickListener {
-            PopupMenu(it.context, it).apply {
-                inflate(R.menu.menu_main)
-                setOnMenuItemClickListener { item ->
-                    when (item.itemId) {
-                        R.id.menuItemDelete -> {
-                            viewModel.deleteById(post.id)
-                            findNavController().navigateUp()
-                            true
-                        }
-                        R.id.menuItemEdit -> {
-                            val bundle = Bundle().apply {
-                                putString("content", post.content)
-                                putLong("postId", post.id)
-                            }
-                            findNavController().navigate(
-                                R.id.action_postCardFragment_to_editPostFragment,
-                                bundle
-                            )
-                            true
-                        }
-                        else -> false
-                    }
+            binding.likeButtonPostFragment.setOnClickListener {
+                if (!post.likeByMe) {
+                    viewModel.likeById(post.id)
+                } else {
+                    viewModel.unlikeById(post.id)
                 }
-            }.show()
+                viewModel.data.observe(viewLifecycleOwner, {
+                    post = viewModel.searchPost(post.id)
+                    binding.likeButtonPostFragment.text = Utils.formatLikes(post.numberOfLikes)
+                })
+            }
+
+            binding.ibMenuPostFragment.setOnClickListener {
+                PopupMenu(it.context, it).apply {
+                    inflate(R.menu.menu_main)
+                    setOnMenuItemClickListener { item ->
+                        when (item.itemId) {
+                            R.id.menuItemDelete -> {
+                                viewModel.deleteById(post.id)
+                                findNavController().navigateUp()
+                                true
+                            }
+                            R.id.menuItemEdit -> {
+                                val bundle = Bundle().apply {
+                                    putString("content", post.content)
+                                    putLong("postId", post.id)
+                                }
+                                findNavController().navigate(
+                                    R.id.action_postCardFragment_to_editPostFragment,
+                                    bundle
+                                )
+                                true
+                            }
+                            else -> false
+                        }
+                    }
+                }.show()
+            }
+            return binding.root
         }
-        return binding.root
     }
 }

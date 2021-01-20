@@ -31,4 +31,5 @@
     <string name="error_loading">Что-то пошло не так. Повторите попытку позже</string>
     <string name="retry_loading">Повторить</string>
     <string name="empty_posts">Нет сообщений. \nЕсли вы создадите новое сообщение, оно появится здесь.\nИли потяните вниз для загрузки списка постов</string>
+    <string name="image_attachment">Вложенное изображение</string>
 </resources>

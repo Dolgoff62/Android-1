@@ -55,6 +55,8 @@ dependencies {
     def frag_version = "1.2.5"
     def room_version = "2.2.5"
     def okhttp_version = "4.9.0"
+    def glide_version = "4.11.0"
+
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'org.greenrobot:eventbus:3.2.0'
@@ -78,6 +80,7 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
     implementation platform('com.google.firebase:firebase-bom:26.0.0')
     implementation "com.google.firebase:firebase-messaging-ktx"
+    implementation "com.github.bumptech.glide:glide:$glide_version"
 
     testImplementation "androidx.fragment:fragment-testing:$frag_version"
     testImplementation "androidx.arch.core:core-testing:$arch_version"

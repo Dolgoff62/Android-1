@@ -87,6 +87,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/barrierBottom" />
 
+    <ImageView
+        android:id="@+id/postImageAttachment"
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/barrierBottom"
+        app:layout_constraintStart_toStartOf="@id/content"
+        app:layout_constraintTop_toBottomOf="@id/content"
+        android:contentDescription="@string/image_attachment" />
+
+
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrierTop"
         android:layout_width="wrap_content"

@@ -12,4 +12,5 @@ data class Post(
     val likeByMe: Boolean = false,
     @SerializedName("likes")
     var numberOfLikes: Int,
+    var attachment: Attachment?
 )
