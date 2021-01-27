@@ -1,27 +1,20 @@
 package ru.netology.nmedia.repository
 
-import androidx.lifecycle.LiveData
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.model.ApiError
 
 interface PostRepository {
-    fun getAll(): List<Post>
-    fun likeById(id: Long): Post
-    fun unlikeById(id: Long): Post
-    fun postCreation(post: Post): Post
-    fun deleteById(id: Long)
-    fun findPostById(id: Long): Post
-    fun updatePost(post: Post): Post
+    fun getAllAsync(callback: Callback<List<Post>>)
+    fun getPostAsync(id: Long, callback: Callback<Post>)
+    fun likeById(id: Long, callback: Callback<Post>)
+    fun unlikeById(id: Long, callback: Callback<Post>)
+    fun postCreation(post: Post, callback: Callback<Post>)
+    fun deleteById(id: Long, callback: Callback<Unit>)
+    fun findPostById(id: Long, callback: Callback<Post>)
+//    fun updatePost(post: Post, callback: Callback<Post>)
 
-    fun getAllAsync(callback: GetAllCallback)
-    fun getPostAsync(id: Long, callback: GetPostCallback)
-
-    interface GetAllCallback {
-        fun onSuccess(posts: List<Post>) {}
-        fun onError(e: Exception) {}
-    }
-
-    interface GetPostCallback {
-        fun onSuccess(post: Post) {}
-        fun onError(e: Exception) {}
+    interface Callback<T>{
+        fun onSuccess(posts: T) {}
+        fun onError(e: ApiError) {}
     }
 }

@@ -6,12 +6,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.fragment_new_post.*
 import ru.netology.nmedia.databinding.FragmentNewPostBinding
+import ru.netology.nmedia.model.getHumanReadableMessage
 import ru.netology.nmedia.utils.Utils
 import ru.netology.nmedia.viewmodel.PostViewModel
 
@@ -65,8 +67,14 @@ class NewPostFragment : Fragment() {
                     clearDraft(prefs)
                 }
                 Utils.hideKeyboard(requireView())
-
-                findNavController().navigateUp()
+                viewModel.postCreated.observe(viewLifecycleOwner) {
+                    viewModel.loadPosts()
+                    findNavController().navigateUp()
+                    return@observe
+                }
+                viewModel.postCreateError.observe(viewLifecycleOwner) {
+                    Toast.makeText(requireContext(), it.getHumanReadableMessage(resources), Toast.LENGTH_LONG).show()
+                }
             }
         }
         return binding.root

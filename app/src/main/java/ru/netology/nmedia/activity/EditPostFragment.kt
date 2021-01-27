@@ -48,7 +48,8 @@ class EditPostFragment : Fragment() {
             if (postId != null) {
                 viewModel.changeContent(postId, content)
             }
-            viewModel.updatePost()
+//            viewModel.updatePost()
+            viewModel.postCreation()
 
             Utils.hideKeyboard(requireView())
 

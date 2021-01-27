@@ -13,6 +13,7 @@ import ru.netology.nmedia.adapter.OnItemClickListener
 import ru.netology.nmedia.adapter.PostAdapter
 import ru.netology.nmedia.databinding.FragmentMainBinding
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.model.getHumanReadableMessage
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 
@@ -78,6 +79,8 @@ class MainFragment : Fragment() {
             adapter.submitList(state.posts)
             binding.progress.isVisible = state.loading
             binding.emptyText.isVisible = state.empty
+            binding.errorGroup.isVisible = state.errorVisible
+            binding.retryTitle.text = state.error.getHumanReadableMessage(resources)
         })
 
         binding.fabAddNewPost.setOnClickListener {
