@@ -5,21 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentPostCardBinding
+import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.model.getHumanReadableMessage
 import ru.netology.nmedia.utils.Utils
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 
 class PostCardFragment : Fragment() {
 
-    private val viewModel: PostViewModel by viewModels(
-        ownerProducer = ::requireParentFragment
-    )
+    private val viewModel: PostViewModel by viewModels(ownerProducer = ::requireParentFragment)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,13 +28,25 @@ class PostCardFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
 
-        var post = viewModel.searchPost(arguments?.get("postId") as Long)
+        var post = Post(
+            id = arguments?.getLong("postId") as Long,
+            author = arguments?.getString("author") as String,
+            authorAvatar = arguments?.getString("authorAvatar") as String,
+            content = arguments?.getString("content") as String,
+            published = arguments?.getString("published") as String,
+            likeByMe = arguments?.getBoolean("likeByMe") as Boolean,
+            numberOfLikes = arguments?.getInt("numberOfLikes") as Int,
+            attachment = arguments?.getParcelable("attachment")
+        )
+
+        serverErrorHandler()
 
         val binding = FragmentPostCardBinding.inflate(
             inflater,
             container,
             false
         )
+
         binding.apply {
             tvAuthorPostFragment.text = post.author
 
@@ -62,15 +75,11 @@ class PostCardFragment : Fragment() {
             }
 
             binding.likeButtonPostFragment.setOnClickListener {
-                if (!post.likeByMe) {
+                if (post.likeByMe) {
                     viewModel.likeById(post.id)
                 } else {
                     viewModel.unlikeById(post.id)
                 }
-                viewModel.data.observe(viewLifecycleOwner, {
-                    post = viewModel.searchPost(post.id)
-                    binding.likeButtonPostFragment.text = Utils.formatLikes(post.numberOfLikes)
-                })
             }
 
             binding.ibMenuPostFragment.setOnClickListener {
@@ -99,7 +108,21 @@ class PostCardFragment : Fragment() {
                     }
                 }.show()
             }
-            return binding.root
+        }
+        return binding.root
+    }
+
+    private fun serverErrorHandler() {
+        viewModel.postCreateError.observe(viewLifecycleOwner) {
+            Toast.makeText(
+                requireContext(),
+                it.getHumanReadableMessage(resources),
+                Toast.LENGTH_LONG
+            )
+                .show()
+        }
+        viewModel.postCreated.observe(viewLifecycleOwner) {
+            viewModel.loadPosts()
         }
     }
 }

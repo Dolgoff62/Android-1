@@ -56,6 +56,7 @@ class NewPostFragment : Fragment() {
 
         binding.etInputArea.requestFocus()
         callback.isEnabled
+
         binding.fabConfirmation.setOnClickListener {
             if (binding.etInputArea.text.isNullOrBlank()) {
                 Utils.hideKeyboard(requireView())
@@ -67,17 +68,27 @@ class NewPostFragment : Fragment() {
                     clearDraft(prefs)
                 }
                 Utils.hideKeyboard(requireView())
-                viewModel.postCreated.observe(viewLifecycleOwner) {
-                    viewModel.loadPosts()
-                    findNavController().navigateUp()
-                    return@observe
-                }
-                viewModel.postCreateError.observe(viewLifecycleOwner) {
-                    Toast.makeText(requireContext(), it.getHumanReadableMessage(resources), Toast.LENGTH_LONG).show()
-                }
             }
         }
+
+        serverErrorHandler()
+
         return binding.root
+    }
+
+    private fun serverErrorHandler() {
+        viewModel.postCreateError.observe(viewLifecycleOwner) {
+            Toast.makeText(
+                requireContext(),
+                it.getHumanReadableMessage(resources),
+                Toast.LENGTH_LONG
+            )
+                .show()
+        }
+        viewModel.postCreated.observe(viewLifecycleOwner) {
+            viewModel.loadPosts()
+            findNavController().navigateUp()
+        }
     }
 
     private fun restoreDraft(

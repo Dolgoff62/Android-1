@@ -9,9 +9,8 @@ sealed class ApiError {
     object UnknownError : ApiError()
 
     companion object {
-        fun fromThrowable (throwable: Throwable) : ApiError =
-            when (throwable)
-            {
+        fun fromThrowable(throwable: Throwable): ApiError =
+            when (throwable) {
                 is ApiException -> throwable.error
                 is ConnectException -> NetworkError
                 else -> UnknownError

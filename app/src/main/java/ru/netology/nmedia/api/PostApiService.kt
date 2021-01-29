@@ -10,7 +10,6 @@ import retrofit2.http.*
 import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.BuildConfig.BASE_URL
 import ru.netology.nmedia.dto.Post
-import java.util.concurrent.TimeUnit
 
 private val logging = HttpLoggingInterceptor().apply {
     if (BuildConfig.DEBUG) {
@@ -19,7 +18,6 @@ private val logging = HttpLoggingInterceptor().apply {
 }
 
 private val client = OkHttpClient.Builder()
-    .connectTimeout(30, TimeUnit.SECONDS)
     .addInterceptor(logging)
     .addNetworkInterceptor(PostsInterceptor())
     .build()
