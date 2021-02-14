@@ -7,11 +7,15 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentPostCardBinding
+import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.Utils
+import ru.netology.nmedia.viewmodel.CardViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 
@@ -20,14 +24,15 @@ class PostCardFragment : Fragment() {
     private val viewModel: PostViewModel by viewModels(
         ownerProducer = ::requireParentFragment
     )
+    private val cardPostViewModel: CardViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View? {
 
-        var post = viewModel.searchPost(arguments?.get("postId") as Long)
+        var post: Post = arguments?.get("post") as Post
 
         val binding = FragmentPostCardBinding.inflate(
             inflater,
@@ -38,7 +43,7 @@ class PostCardFragment : Fragment() {
             tvAuthorPostFragment.text = post.author
 
             val url = "http://10.0.2.2:9999/avatars/${post.authorAvatar}"
-            val urlAttach = "http://10.0.2.2:9999/images/${post.attachment?.url}"
+//            val urlAttach = "http://10.0.2.2:9999/images/${post.attachment?.url}"
 
             if (post.authorAvatar != "") {
                 Glide.with(binding.logoPostFragment.context)
@@ -53,24 +58,24 @@ class PostCardFragment : Fragment() {
             likeButtonPostFragment.text = Utils.formatLikes(post.numberOfLikes)
             likeButtonPostFragment.isChecked = post.likeByMe
 
-            if (post.attachment != null) {
-                binding.fragmentPostImageAttachment.visibility = View.VISIBLE
-                Glide.with(binding.fragmentPostImageAttachment.context)
-                    .load(urlAttach)
-                    .timeout(30_000)
-                    .into(binding.fragmentPostImageAttachment)
-            }
+//            if (post.attachment != null) {
+//                binding.fragmentPostImageAttachment.visibility = View.VISIBLE
+//                Glide.with(binding.fragmentPostImageAttachment.context)
+//                    .load(urlAttach)
+//                    .timeout(30_000)
+//                    .into(binding.fragmentPostImageAttachment)
+//            }
 
             binding.likeButtonPostFragment.setOnClickListener {
                 if (!post.likeByMe) {
-                    viewModel.likeById(post.id)
+                    cardPostViewModel.likeById(post.id)
                 } else {
-                    viewModel.unlikeById(post.id)
+                    cardPostViewModel.unlikeById(post.id)
                 }
-                viewModel.data.observe(viewLifecycleOwner, {
-                    post = viewModel.searchPost(post.id)
-                    binding.likeButtonPostFragment.text = Utils.formatLikes(post.numberOfLikes)
-                })
+                cardPostViewModel.post.observe(viewLifecycleOwner) {
+                    val newPost = it.post
+                    binding.likeButtonPostFragment.text = Utils.formatLikes(newPost.numberOfLikes)
+                }
             }
 
             binding.ibMenuPostFragment.setOnClickListener {

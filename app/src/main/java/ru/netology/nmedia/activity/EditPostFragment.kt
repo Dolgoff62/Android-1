@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -48,12 +49,11 @@ class EditPostFragment : Fragment() {
             if (postId != null) {
                 viewModel.changeContent(postId, content)
             }
-//            viewModel.updatePost()
             viewModel.postCreation()
 
             Utils.hideKeyboard(requireView())
 
-            findNavController().navigate(R.id.mainFragment)
+            serverErrorHandler()
         }
 
         binding.mbCancelEditing.setOnClickListener {
@@ -62,4 +62,23 @@ class EditPostFragment : Fragment() {
         }
         return binding.root
     }
+
+    private fun serverErrorHandler() {
+        viewModel.dataState.observe(viewLifecycleOwner, { state ->
+            if (state.error) {
+                Toast.makeText(
+                    requireContext(),
+                    R.string.error_loading,
+                    Toast.LENGTH_LONG
+                )
+                    .show()
+            } else {
+                viewModel.postCreated.observe(viewLifecycleOwner) {
+                    viewModel.loadPosts()
+                    findNavController().navigateUp()
+                }
+            }
+        })
+    }
+
 }

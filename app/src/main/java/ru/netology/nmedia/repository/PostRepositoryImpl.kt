@@ -1,149 +1,107 @@
 package ru.netology.nmedia.repository
 
-import android.os.StrictMode
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import okhttp3.*
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import ru.netology.nmedia.BuildConfig.BASE_URL
-import ru.netology.nmedia.api.PostApi
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.map
+import okio.IOException
 import ru.netology.nmedia.api.PostApiService
+import ru.netology.nmedia.dao.PostDao
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.entity.PostEntity
+import ru.netology.nmedia.entity.toDto
+import ru.netology.nmedia.entity.toEntity
 import ru.netology.nmedia.model.ApiError
-import java.io.IOException
-import java.util.concurrent.TimeUnit
-import java.lang.RuntimeException
+import ru.netology.nmedia.model.NetworkError
+import ru.netology.nmedia.model.UnknownError
+import kotlin.concurrent.thread
 
 
+class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
+    override val data = dao.getAll().map(List<PostEntity>::toDto)
 
-class PostRepositoryImpl : PostRepository {
-    private val client = OkHttpClient.Builder()
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .build()
-    private val gson = Gson()
-    private val typeListToken = object : TypeToken<List<Post>>() {}
-    private val typePostToken = object : TypeToken<Post>() {}
-
-//    companion object {
-//        private const val BASE_URL = "http://10.0.2.2:9999"
-//        private val jsonType = "application/json".toMediaType()
-//    }
-
-    override fun getAllAsync(callback: PostRepository.Callback<List<Post>>) {
-        PostApiService.api.getAll().enqueue(object : Callback<List<Post>> {
-            override fun onResponse(call: Call<List<Post>>, response: Response<List<Post>>) {
-                callback.onSuccess(response.body()?: throw RuntimeException("body is null"))
+    override suspend fun getAll() {
+        try {
+            val response = PostApiService.api.getAll()
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
             }
 
-            override fun onFailure(call: Call<List<Post>>, t: Throwable) {
-                callback.onError(ApiError.fromThrowable(t))
-            }
-        })
+            val body = response.body() ?: throw ApiError(response.code(), response.message())
+            dao.insert(body.toEntity())
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            throw UnknownError
+        }
     }
 
-    override fun getPostAsync(id: Long, callback: PostRepository.Callback<Post>) {
-        PostApiService.api.getPostAsync(id).enqueue(object : Callback<Post> {
-            override fun onResponse(call: Call<Post>, response: Response<Post>) {
-                callback.onSuccess(response.body() ?: throw RuntimeException("Body is null"))
-            }
-
-            override fun onFailure(call: Call<Post>, t: Throwable) {
-                callback.onError(ApiError.fromThrowable(t))
-            }
-        })
+    override suspend fun getPostById(id: Long) : Post{
+        try {
+            return dao.getPostById(id)
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            throw UnknownError
+        }
     }
 
-    override fun likeById(id: Long, callback: PostRepository.Callback<Post>) {
-        val request: Request = Request.Builder()
-            .method("POST", body = "".toRequestBody())
-            .url("${BASE_URL}/api/posts/$id/likes")
-            .build()
+    override suspend fun postCreation(post: Post) {
+        try {
+            val response = PostApiService.api.postCreation(post)
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
 
-        return client.newCall(request)
-            .execute()
-            .use {
-                it.body?.string()
-            }
-            .let {
-                gson.fromJson(it, typePostToken.type)
-            }
+            val body = response.body() ?: throw ApiError(response.code(), response.message())
+            dao.insert(PostEntity.fromDto(body))
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            throw UnknownError
+        }
     }
 
-    override fun unlikeById(id: Long, callback: PostRepository.Callback<Post>) {
-        val request: Request = Request.Builder()
-            .delete()
-            .url("${BASE_URL}/api/posts/$id/likes")
-            .build()
+    override suspend fun likeById(id: Long) {
+        dao.likeById(id)
+        try {
+            val response = PostApiService.api.likeById(id)
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
 
-        return client.newCall(request)
-            .execute()
-            .use {
-                it.body?.string()
-            }
-            .let {
-                gson.fromJson(it, typePostToken.type)
-            }
+            response.body() ?: throw ApiError(response.code(), response.message())
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            throw UnknownError
+        }
     }
 
-    override fun postCreation(post: Post, callback: PostRepository.Callback<Post>) {
-        PostApiService.api.postCreation(post).enqueue(object : Callback<Post> {
-            override fun onResponse(call: Call<Post>, response: Response<Post>) {
-                callback.onSuccess(response.body() ?: throw RuntimeException("Body is null"))
+    override suspend fun unlikeById(id: Long) {
+        dao.likeById(id)
+        try {
+            val response = PostApiService.api.unlikeById(id)
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
             }
 
-            override fun onFailure(call: Call<Post>, t: Throwable) {
-                callback.onError(ApiError.fromThrowable(t))
+            response.body() ?: throw ApiError(response.code(), response.message())
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            throw UnknownError
+        }    }
+
+    override suspend fun deleteById(id: Long) {
+        try {
+            val response = PostApiService.api.deleteById(id)
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
             }
-        })
-    }
-
-//    override fun updatePost(post: Post, callback: PostRepository.Callback<Post>) {
-//        val request: Request = Request.Builder()
-//            .post(gson.toJson(post).toRequestBody(jsonType))
-//            .url("${BASE_URL}/api/posts")
-//            .build()
-//
-//        return client.newCall(request)
-//            .execute()
-//            .use {
-//                it.body?.string()
-//            }
-//            .let {
-//                gson.fromJson(it, typePostToken.type)
-//            }
-//    }
-
-    override fun deleteById(id: Long, callback: PostRepository.Callback<Unit>) {
-        val request: Request = Request.Builder()
-            .delete()
-            .url("${BASE_URL}/api/posts/$id")
-            .build()
-
-        client.newCall(request)
-            .execute()
-    }
-
-    override fun findPostById(id: Long, callback: PostRepository.Callback<Post>) {
-
-        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
-        StrictMode.setThreadPolicy(policy)
-
-        val request: Request = Request.Builder()
-            .get()
-            .url("${BASE_URL}/api/posts/$id")
-            .build()
-
-        return client.newCall(request)
-            .execute()
-            .use {
-                it.body?.string()
-            }
-            .let {
-                gson.fromJson(it, typePostToken.type)
-            }
+            dao.deleteById(id)
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            throw UnknownError
+        }
     }
 }

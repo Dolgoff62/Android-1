@@ -8,12 +8,12 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.OnItemClickListener
 import ru.netology.nmedia.adapter.PostAdapter
 import ru.netology.nmedia.databinding.FragmentMainBinding
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.model.getHumanReadableMessage
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 
@@ -68,24 +68,50 @@ class MainFragment : Fragment() {
 
             override fun onPost(post: Post) {
                 val bundle = Bundle().apply {
-                    putLong("postId", post.id)
+                    putParcelable("post", post)
                 }
                 findNavController().navigate(R.id.action_mainFragment_to_postCardFragment, bundle)
             }
         })
 
         binding.rvPosts.adapter = adapter
+        viewModel.dataState.observe(viewLifecycleOwner, { state ->
+            binding.progress.isVisible = state.loading
+            binding.swiperefresh.isRefreshing = state.refreshing
+            if (state.error) {
+                Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.retry_loading) { viewModel.loadPosts() }
+                    .show()
+            }
+        })
         viewModel.data.observe(viewLifecycleOwner, { state ->
             adapter.submitList(state.posts)
-            binding.progress.isVisible = state.loading
             binding.emptyText.isVisible = state.empty
-            binding.errorGroup.isVisible = state.errorVisible
-            binding.retryTitle.text = state.error.getHumanReadableMessage(resources)
         })
+
+
+//        binding.rvPosts.adapter = adapter
+//        viewModel.data.observe(viewLifecycleOwner, { state ->
+//            adapter.submitList(state.posts)
+//            binding.progress.isVisible = state.loading
+//            binding.emptyText.isVisible = state.empty
+//            binding.errorGroup.isVisible = state.errorVisible
+//            binding.retryTitle.text = state.error.getHumanReadableMessage(resources)
+//        })
 
         binding.fabAddNewPost.setOnClickListener {
             findNavController().navigate(R.id.action_mainFragment_to_newPostFragment)
         }
+
+//        viewModel.postCreateError.observe(viewLifecycleOwner) {
+//            Toast.makeText(
+//                requireContext(),
+//                it.getHumanReadableMessage(resources),
+//                Toast.LENGTH_LONG
+//            )
+//                .show()
+//        }
+
         return binding.root
     }
 }

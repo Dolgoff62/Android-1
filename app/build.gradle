@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-parcelize'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 
@@ -36,30 +36,33 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             manifestPlaceholders.usesCleartextTraffic = false
+            buildConfigField "String", "BASE_URL", '"http://10.0.2.2:9999/api/"'
         }
         debug {
             manifestPlaceholders.usesCleartextTraffic = true
-            buildConfigField "String", "BASE_URL", '"http://10.0.2.2:9999/api/slow/"'
+            buildConfigField "String", "BASE_URL", '"http://10.0.2.2:9999/api/"'
         }
     }
 }
 
 dependencies {
 
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
     def lifecycle_version = "2.2.0"
     def arch_version = "2.1.0"
     def activity_version = "1.1.0"
     def mdc_version = "1.2.1"
-    def nav_version = "2.3.1"
+    def nav_version = '2.3.2'
     def frag_version = "1.2.5"
     def glide_version = "4.11.0"
     def retrofit_version = "2.9.0"
     def retrofitgson_version = "2.9.0"
     def okhttploggin_version = "4.9.0"
+    def room_version = "2.2.6"
+    def coroutines_version = "1.4.2"
 
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'org.greenrobot:eventbus:3.2.0'
     implementation "com.google.android.material:material:$mdc_version"
@@ -82,6 +85,10 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:26.0.0')
     implementation "com.google.firebase:firebase-messaging-ktx"
     implementation "com.github.bumptech.glide:glide:$glide_version"
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
 
     testImplementation "androidx.fragment:fragment-testing:$frag_version"
     testImplementation "androidx.arch.core:core-testing:$arch_version"

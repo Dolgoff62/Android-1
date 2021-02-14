@@ -30,6 +30,7 @@
     <string name="notification_new_post">Пользователь %1$s создал новый пост</string>
     <string name="error_loading">Что-то пошло не так. Повторите попытку позже</string>
     <string name="retry_loading">Повторить</string>
+    <string name="retry_saving">Сетевая Ошибка! Повторите</string>
     <string name="empty_posts">Нет сообщений. \nЕсли вы создадите новое сообщение, оно появится здесь.\nИли потяните вниз для загрузки списка постов</string>
     <string name="image_attachment">Вложенное изображение</string>
 </resources>

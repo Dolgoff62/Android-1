@@ -8,13 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import kotlinx.android.synthetic.main.fragment_new_post.*
+import com.google.android.material.snackbar.Snackbar
+import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentNewPostBinding
-import ru.netology.nmedia.model.getHumanReadableMessage
 import ru.netology.nmedia.utils.Utils
+import ru.netology.nmedia.viewmodel.CardViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 
@@ -27,6 +29,8 @@ class NewPostFragment : Fragment() {
     private val viewModel: PostViewModel by viewModels(
         ownerProducer = ::requireParentFragment
     )
+
+    private val cardPostViewModel: CardViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,7 +48,7 @@ class NewPostFragment : Fragment() {
 
         val callback = requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             if (prefs != null) {
-                saveDraft(prefs)
+                saveDraft(prefs, binding.etInputArea.text.toString())
                 findNavController().navigateUp()
             }
         }
@@ -56,6 +60,23 @@ class NewPostFragment : Fragment() {
 
         binding.etInputArea.requestFocus()
         callback.isEnabled
+
+        cardPostViewModel.post.observe(viewLifecycleOwner, { state ->
+            if (state.error) {
+                Toast.makeText(
+                    requireContext(),
+                    R.string.error_loading,
+                    Toast.LENGTH_LONG
+                )
+                    .show()
+            } else {
+                viewModel.postCreated.observe(viewLifecycleOwner) {
+                    viewModel.loadPosts()
+                    findNavController().navigateUp()
+                }
+            }
+        })
+
         binding.fabConfirmation.setOnClickListener {
             if (binding.etInputArea.text.isNullOrBlank()) {
                 Utils.hideKeyboard(requireView())
@@ -67,39 +88,32 @@ class NewPostFragment : Fragment() {
                     clearDraft(prefs)
                 }
                 Utils.hideKeyboard(requireView())
-                viewModel.postCreated.observe(viewLifecycleOwner) {
-                    viewModel.loadPosts()
-                    findNavController().navigateUp()
-                    return@observe
-                }
-                viewModel.postCreateError.observe(viewLifecycleOwner) {
-                    Toast.makeText(requireContext(), it.getHumanReadableMessage(resources), Toast.LENGTH_LONG).show()
-                }
+                findNavController().navigateUp()
             }
         }
         return binding.root
     }
+}
 
-    private fun restoreDraft(
-        prefs: SharedPreferences?,
-        binding: FragmentNewPostBinding
-    ) {
-        val draftText = prefs?.getString("draftText", "")
+private fun restoreDraft(
+    prefs: SharedPreferences?,
+    binding: FragmentNewPostBinding
+) {
+    val draftText = prefs?.getString("draftText", "")
 
-        if (draftText != "") {
-            binding.etInputArea.setText(draftText)
-        }
+    if (draftText != "") {
+        binding.etInputArea.setText(draftText)
     }
+}
 
-    private fun saveDraft(prefs: SharedPreferences) {
-        val editor = prefs.edit()
-        editor.putString("draftText", etInputArea.text.toString())
-        editor.apply()
-    }
+private fun saveDraft(prefs: SharedPreferences, text: String) {
+    val editor = prefs.edit()
+    editor.putString("draftText", text)
+    editor.apply()
+}
 
-    private fun clearDraft(prefs: SharedPreferences) {
-        val editor = prefs.edit()
-        editor.remove("draftText")
-        editor.apply()
-    }
+private fun clearDraft(prefs: SharedPreferences) {
+    val editor = prefs.edit()
+    editor.remove("draftText")
+    editor.apply()
 }

@@ -97,7 +97,7 @@ class FCMService : FirebaseMessagingService() {
                 getString(
                     R.string.notification_user_liked,
                     content.userName,
-                    content.postAuthor,
+                    content.postAuthor
                 )
             )
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -114,7 +114,7 @@ class FCMService : FirebaseMessagingService() {
                 getString(
                     R.string.notification_user_share,
                     content.userName,
-                    content.postAuthor,
+                    content.postAuthor
                 )
             )
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -144,26 +144,26 @@ class FCMService : FirebaseMessagingService() {
 data class NewPost(
     val id: Long,
     val author: String,
-    val text: String,
+    val text: String
 )
 
 data class Like(
     val userId: Long,
     val userName: String,
     val postId: Long,
-    val postAuthor: String,
+    val postAuthor: String
 )
 
 data class Share(
     val userId: Long,
     val userName: String,
     val postId: Long,
-    val postAuthor: String,
+    val postAuthor: String
 )
 
 data class Else(
     val userId: Long,
     val userName: String,
     val postId: Long,
-    val postAuthor: String,
+    val postAuthor: String
 )
