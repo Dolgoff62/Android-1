@@ -7,7 +7,14 @@ import android.text.TextUtils.isEmpty
 import android.util.Patterns
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.annotation.Nullable
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.model.getHumanReadableMessage
+import ru.netology.nmedia.viewmodel.PostViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.floor
@@ -60,6 +67,19 @@ class Utils {
             }
             return false
         }
+    }
+
+    object EmptyPost {
+        val emptyPost = Post(
+            id = 0L,
+            author = "",
+            authorAvatar = "",
+            content = "",
+            published = "",
+            likeByMe = false,
+            numberOfLikes = 0,
+            attachment = null
+        )
     }
 
     object StringArg : ReadWriteProperty<Bundle, String?> {

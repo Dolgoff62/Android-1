@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentEditPostBinding
+import ru.netology.nmedia.model.getHumanReadableMessage
 import ru.netology.nmedia.utils.Utils
 import ru.netology.nmedia.viewmodel.PostViewModel
 
@@ -64,6 +65,7 @@ class EditPostFragment : Fragment() {
     }
 
     private fun serverErrorHandler() {
+<<<<<<< HEAD
         viewModel.dataState.observe(viewLifecycleOwner, { state ->
             if (state.error) {
                 Toast.makeText(
@@ -79,6 +81,20 @@ class EditPostFragment : Fragment() {
                 }
             }
         })
+=======
+        viewModel.postCreateError.observe(viewLifecycleOwner) {
+            Toast.makeText(
+                requireContext(),
+                it.getHumanReadableMessage(resources),
+                Toast.LENGTH_LONG
+            )
+                .show()
+        }
+        viewModel.postCreated.observe(viewLifecycleOwner) {
+            viewModel.loadPosts()
+            findNavController().navigate(R.id.mainFragment)
+        }
+>>>>>>> 74f650ad9a25f8190adc488187d899c354210929
     }
 
 }

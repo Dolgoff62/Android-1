@@ -36,7 +36,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             manifestPlaceholders.usesCleartextTraffic = false
+<<<<<<< HEAD
             buildConfigField "String", "BASE_URL", '"http://10.0.2.2:9999/api/"'
+=======
+            buildConfigField "String", "BASE_URL", '"http://10.0.2.2:9999/api/slow/"'
+>>>>>>> 74f650ad9a25f8190adc488187d899c354210929
         }
         debug {
             manifestPlaceholders.usesCleartextTraffic = true

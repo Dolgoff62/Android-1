@@ -61,6 +61,7 @@ class NewPostFragment : Fragment() {
         binding.etInputArea.requestFocus()
         callback.isEnabled
 
+<<<<<<< HEAD
         cardPostViewModel.post.observe(viewLifecycleOwner, { state ->
             if (state.error) {
                 Toast.makeText(
@@ -77,6 +78,8 @@ class NewPostFragment : Fragment() {
             }
         })
 
+=======
+>>>>>>> 74f650ad9a25f8190adc488187d899c354210929
         binding.fabConfirmation.setOnClickListener {
             if (binding.etInputArea.text.isNullOrBlank()) {
                 Utils.hideKeyboard(requireView())
@@ -88,18 +91,58 @@ class NewPostFragment : Fragment() {
                     clearDraft(prefs)
                 }
                 Utils.hideKeyboard(requireView())
+<<<<<<< HEAD
                 findNavController().navigateUp()
+=======
+>>>>>>> 74f650ad9a25f8190adc488187d899c354210929
             }
         }
+
+        serverErrorHandler()
+
         return binding.root
     }
 }
 
+<<<<<<< HEAD
 private fun restoreDraft(
     prefs: SharedPreferences?,
     binding: FragmentNewPostBinding
 ) {
     val draftText = prefs?.getString("draftText", "")
+=======
+    private fun serverErrorHandler() {
+        viewModel.postCreateError.observe(viewLifecycleOwner) {
+            Toast.makeText(
+                requireContext(),
+                it.getHumanReadableMessage(resources),
+                Toast.LENGTH_LONG
+            )
+                .show()
+        }
+        viewModel.postCreated.observe(viewLifecycleOwner) {
+            viewModel.loadPosts()
+            findNavController().navigateUp()
+        }
+    }
+
+    private fun restoreDraft(
+        prefs: SharedPreferences?,
+        binding: FragmentNewPostBinding
+    ) {
+        val draftText = prefs?.getString("draftText", "")
+
+        if (draftText != "") {
+            binding.etInputArea.setText(draftText)
+        }
+    }
+
+    private fun saveDraft(prefs: SharedPreferences) {
+        val editor = prefs.edit()
+        editor.putString("draftText", etInputArea.text.toString())
+        editor.apply()
+    }
+>>>>>>> 74f650ad9a25f8190adc488187d899c354210929
 
     if (draftText != "") {
         binding.etInputArea.setText(draftText)

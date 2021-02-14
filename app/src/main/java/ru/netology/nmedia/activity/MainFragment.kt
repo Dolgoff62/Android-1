@@ -67,8 +67,20 @@ class MainFragment : Fragment() {
             }
 
             override fun onPost(post: Post) {
+
                 val bundle = Bundle().apply {
+<<<<<<< HEAD
                     putParcelable("post", post)
+=======
+                    putLong("postId", post.id)
+                    putString("author", post.author)
+                    putString("authorAvatar", post.authorAvatar)
+                    putString("content", post.content)
+                    putString("published", post.published)
+                    putBoolean("likeByMe", post.likeByMe)
+                    putInt("numberOfLikes", post.numberOfLikes)
+                    putParcelable("attachment", post.attachment)
+>>>>>>> 74f650ad9a25f8190adc488187d899c354210929
                 }
                 findNavController().navigate(R.id.action_mainFragment_to_postCardFragment, bundle)
             }
