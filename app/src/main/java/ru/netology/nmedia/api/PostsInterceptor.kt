@@ -2,7 +2,6 @@ package ru.netology.nmedia.api
 
 import okhttp3.Interceptor
 import okhttp3.Response
-import ru.netology.nmedia.model.ApiError
 import ru.netology.nmedia.model.ApiException
 import java.net.HttpURLConnection
 

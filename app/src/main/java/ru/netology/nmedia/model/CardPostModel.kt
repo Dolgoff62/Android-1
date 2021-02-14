@@ -1,6 +1,7 @@
 package ru.netology.nmedia.model
 
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.error.ApiError
 import ru.netology.nmedia.utils.Utils
 
 data class CardPostModel(

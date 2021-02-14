@@ -69,18 +69,7 @@ class MainFragment : Fragment() {
             override fun onPost(post: Post) {
 
                 val bundle = Bundle().apply {
-<<<<<<< HEAD
                     putParcelable("post", post)
-=======
-                    putLong("postId", post.id)
-                    putString("author", post.author)
-                    putString("authorAvatar", post.authorAvatar)
-                    putString("content", post.content)
-                    putString("published", post.published)
-                    putBoolean("likeByMe", post.likeByMe)
-                    putInt("numberOfLikes", post.numberOfLikes)
-                    putParcelable("attachment", post.attachment)
->>>>>>> 74f650ad9a25f8190adc488187d899c354210929
                 }
                 findNavController().navigate(R.id.action_mainFragment_to_postCardFragment, bundle)
             }
@@ -101,29 +90,9 @@ class MainFragment : Fragment() {
             binding.emptyText.isVisible = state.empty
         })
 
-
-//        binding.rvPosts.adapter = adapter
-//        viewModel.data.observe(viewLifecycleOwner, { state ->
-//            adapter.submitList(state.posts)
-//            binding.progress.isVisible = state.loading
-//            binding.emptyText.isVisible = state.empty
-//            binding.errorGroup.isVisible = state.errorVisible
-//            binding.retryTitle.text = state.error.getHumanReadableMessage(resources)
-//        })
-
         binding.fabAddNewPost.setOnClickListener {
             findNavController().navigate(R.id.action_mainFragment_to_newPostFragment)
         }
-
-//        viewModel.postCreateError.observe(viewLifecycleOwner) {
-//            Toast.makeText(
-//                requireContext(),
-//                it.getHumanReadableMessage(resources),
-//                Toast.LENGTH_LONG
-//            )
-//                .show()
-//        }
-
         return binding.root
     }
 }
