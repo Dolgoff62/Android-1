@@ -33,4 +33,5 @@
     <string name="retry_saving">Network Error! Retry</string>
     <string name="empty_posts">There are no posts.\nIf you create a new post, it will appear here.\nOr drag down to load the list of posts</string>
     <string name="image_attachment">Image Attachment</string>
+    <string name="new_posts">New Posts</string>
 </resources>

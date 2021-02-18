@@ -8,6 +8,8 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.OnItemClickListener
@@ -80,19 +82,52 @@ class MainFragment : Fragment() {
             binding.progress.isVisible = state.loading
             binding.swiperefresh.isRefreshing = state.refreshing
             if (state.error) {
-                Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
+                Snackbar.make(
+                    binding.root,
+                    R.string.error_loading,
+                    Snackbar.LENGTH_LONG
+                )
                     .setAction(R.string.retry_loading) { viewModel.loadPosts() }
                     .show()
             }
         })
+
         viewModel.data.observe(viewLifecycleOwner, { state ->
             adapter.submitList(state.posts)
             binding.emptyText.isVisible = state.empty
         })
 
+        viewModel.newerCount.observe(viewLifecycleOwner, { state ->
+            when {
+                state != 0 -> binding.newPostsChip.visibility = View.VISIBLE
+                else -> binding.newPostsChip.visibility = View.GONE
+            }
+        })
+
+        binding.newPostsChip.setOnClickListener {
+            viewModel.run {
+                makeReadPosts()
+                loadPosts()
+            }
+            binding.rvPosts.smoothSnapToPosition(0)
+            it.visibility = View.GONE
+        }
+
         binding.fabAddNewPost.setOnClickListener {
             findNavController().navigate(R.id.action_mainFragment_to_newPostFragment)
         }
         return binding.root
+    }
+
+    private fun RecyclerView.smoothSnapToPosition(
+        position: Int,
+        snapMode: Int = LinearSmoothScroller.SNAP_TO_START
+    ) {
+        val smoothScroller = object : LinearSmoothScroller(this.context) {
+            override fun getVerticalSnapPreference(): Int = snapMode
+            override fun getHorizontalSnapPreference(): Int = snapMode
+        }
+        smoothScroller.targetPosition = position
+        layoutManager?.startSmoothScroll(smoothScroller)
     }
 }

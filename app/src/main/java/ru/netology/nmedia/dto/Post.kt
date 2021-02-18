@@ -14,5 +14,6 @@ data class Post (
     @SerializedName("likedByMe")
     val likeByMe: Boolean = false,
     @SerializedName("likes")
-    var numberOfLikes: Int
+    var numberOfLikes: Int,
+    val showOrNot: Boolean = false
 ): Parcelable
