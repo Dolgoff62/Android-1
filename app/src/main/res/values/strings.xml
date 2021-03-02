@@ -34,4 +34,9 @@
     <string name="empty_posts">There are no posts.\nIf you create a new post, it will appear here.\nOr drag down to load the list of posts</string>
     <string name="image_attachment">Image Attachment</string>
     <string name="new_posts">New Posts</string>
+    <string name="menu_save">Save Post</string>
+    <string name="description_take_photo">Take photo with camera</string>
+    <string name="description_select_photo">Take photo from gallery</string>
+    <string name="remove">Remove</string>
+    <string name="description_photo">Description Photo</string>
 </resources>

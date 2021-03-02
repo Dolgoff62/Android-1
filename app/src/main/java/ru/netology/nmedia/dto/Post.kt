@@ -1,10 +1,9 @@
 package ru.netology.nmedia.dto
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import androidx.room.Embedded
 import com.google.gson.annotations.SerializedName
+import ru.netology.nmedia.enum.AttachmentType
 
-@Parcelize
 data class Post (
     val id: Long,
     val author: String,
@@ -15,5 +14,7 @@ data class Post (
     val likeByMe: Boolean = false,
     @SerializedName("likes")
     var numberOfLikes: Int,
-    val showOrNot: Boolean = false
-): Parcelable
+    val showOrNot: Boolean = false,
+    @Embedded
+    val attachment: Attachment? = null
+)

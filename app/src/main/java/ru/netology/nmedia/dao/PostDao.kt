@@ -1,12 +1,10 @@
 package ru.netology.nmedia.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.entity.PostEntity
+import ru.netology.nmedia.enum.AttachmentType
 
 @Dao
 interface PostDao {
@@ -19,7 +17,7 @@ interface PostDao {
     @Query("UPDATE PostEntity Set showOrNot = :showOrNot WHERE showOrNot is not :showOrNot")
     suspend fun showOrNot(showOrNot: Boolean)
 
-    @Query("""SELECT * FROM PostEntity WHERE id = :id""")
+    @Query("SELECT * FROM PostEntity WHERE id = :id")
     suspend fun getPostById(id: Long): Post
 
     @Query("SELECT COUNT(*) == 0 FROM PostEntity")
@@ -44,4 +42,12 @@ interface PostDao {
 
     @Query("DELETE FROM PostEntity WHERE id = :id")
     suspend fun deleteById(id: Long)
+}
+
+class Converters {
+        @TypeConverter
+        fun toAttachmentType(value: String) = enumValueOf<AttachmentType>(value)
+
+        @TypeConverter
+        fun fromAttachment(value: AttachmentType) = value.name
 }

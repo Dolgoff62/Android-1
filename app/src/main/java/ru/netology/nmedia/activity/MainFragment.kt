@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.annotations.SerializedName
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.OnItemClickListener
 import ru.netology.nmedia.adapter.PostAdapter
@@ -69,9 +70,18 @@ class MainFragment : Fragment() {
             }
 
             override fun onPost(post: Post) {
-
                 val bundle = Bundle().apply {
-                    putParcelable("post", post)
+                    putLong("postId", post.id)
+                    putString("author", post.author)
+                    putString("authorAvatar", post.authorAvatar)
+                    putString("content", post.content)
+                    putString("published", post.published)
+                    putBoolean("likeByMe", post.likeByMe)
+                    putInt("numberOfLikes", post.numberOfLikes)
+                    if (post.attachment != null) {
+                        putString("attachmentUrl", post.attachment.url)
+                        putString("attachmentType", post.attachment.type.toString())
+                    }
                 }
                 findNavController().navigate(R.id.action_mainFragment_to_postCardFragment, bundle)
             }

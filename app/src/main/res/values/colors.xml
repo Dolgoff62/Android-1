@@ -7,4 +7,5 @@
     <color name="colorMediumGrey">#a59a9a</color>
     <color name="colorRed">#ff0000</color>
     <color name="colorDarkGrey">#5b5555</color>
+    <color name="divider_color">#ccc</color>
 </resources>

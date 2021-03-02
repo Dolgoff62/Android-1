@@ -34,4 +34,9 @@
     <string name="empty_posts">Нет сообщений. \nЕсли вы создадите новое сообщение, оно появится здесь.\nИли потяните вниз для загрузки списка постов</string>
     <string name="image_attachment">Вложенное изображение</string>
     <string name="new_posts">Новые посты</string>
+    <string name="menu_save">Сохранение поста</string>
+    <string name="description_take_photo">Сделать фото с помощью камеры</string>
+    <string name="description_select_photo">Взять фото из галереи</string>
+    <string name="remove">Удалить</string>
+    <string name="description_photo">Описание фотографии</string>
 </resources>

@@ -59,6 +59,8 @@ dependencies {
     def okhttploggin_version = "4.9.0"
     def room_version = "2.2.6"
     def coroutines_version = "1.4.2"
+    def imagepicker_version = "1.8"
+
 
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
@@ -89,6 +91,8 @@ dependencies {
     implementation "androidx.room:room-ktx:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+    implementation "com.github.dhaval2404:imagepicker:$imagepicker_version"
+
 
     testImplementation "androidx.fragment:fragment-testing:$frag_version"
     testImplementation "androidx.arch.core:core-testing:$arch_version"

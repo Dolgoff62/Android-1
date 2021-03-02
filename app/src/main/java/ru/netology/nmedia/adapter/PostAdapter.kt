@@ -45,7 +45,7 @@ class PostViewHolder(
             tvAuthorPost.text = post.author
 
             val url = "http://10.0.2.2:9999/avatars/${post.authorAvatar}"
-//            val urlAttach = "http://10.0.2.2:9999/images/${post.attachment?.url}"
+            val urlAttach = "http://10.0.2.2:9999/images/${post.attachment?.url}"
 
             if (post.authorAvatar != "") {
                 Glide.with(logo.context)
@@ -60,15 +60,15 @@ class PostViewHolder(
             likeButton.text = Utils.formatLikes(post.numberOfLikes)
             likeButton.isChecked = post.likeByMe
 
-//            if (post.attachment == null) {
-//                binding.postImageAttachment.visibility = View.GONE
-//            } else {
-//                binding.postImageAttachment.visibility = View.VISIBLE
-//                Glide.with(binding.postImageAttachment.context)
-//                    .load(urlAttach)
-//                    .timeout(30_000)
-//                    .into(binding.postImageAttachment)
-//            }
+            if (post.attachment == null) {
+                binding.postImageAttachment.visibility = View.GONE
+            } else {
+                binding.postImageAttachment.visibility = View.VISIBLE
+                Glide.with(binding.postImageAttachment.context)
+                    .load(urlAttach)
+                    .timeout(30_000)
+                    .into(binding.postImageAttachment)
+            }
 
             ibMenu.setOnClickListener {
                 PopupMenu(it.context, it).apply {

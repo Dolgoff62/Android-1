@@ -89,9 +89,9 @@
 
     <ImageView
         android:id="@+id/postImageAttachment"
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@id/barrierBottom"
         app:layout_constraintStart_toStartOf="@id/content"
         app:layout_constraintTop_toBottomOf="@id/content"
