@@ -53,14 +53,13 @@ dependencies {
     def mdc_version = "1.2.1"
     def nav_version = '2.3.2'
     def frag_version = "1.2.5"
-    def glide_version = "4.11.0"
+    def glide_version = "4.12.0"
     def retrofit_version = "2.9.0"
     def retrofitgson_version = "2.9.0"
     def okhttploggin_version = "4.9.0"
     def room_version = "2.2.6"
     def coroutines_version = "1.4.2"
     def imagepicker_version = "1.8"
-
 
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
@@ -87,6 +86,7 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:26.0.0')
     implementation "com.google.firebase:firebase-messaging-ktx"
     implementation "com.github.bumptech.glide:glide:$glide_version"
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
     kapt "androidx.room:room-compiler:$room_version"

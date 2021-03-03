@@ -39,4 +39,7 @@
     <string name="description_select_photo">Взять фото из галереи</string>
     <string name="remove">Удалить</string>
     <string name="description_photo">Описание фотографии</string>
+    <string name="photo">Фото вложение к посту</string>
+    <string name="menu_copy_url">скопировать ссылку на фото</string>
+    <string name="Back">Назад</string>
 </resources>

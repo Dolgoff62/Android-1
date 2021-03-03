@@ -39,4 +39,7 @@
     <string name="description_select_photo">Take photo from gallery</string>
     <string name="remove">Remove</string>
     <string name="description_photo">Description Photo</string>
+    <string name="photo">Photo view in attachment of post</string>
+    <string name="menu_copy_url">copy photo URL</string>
+    <string name="Back">Back</string>
 </resources>

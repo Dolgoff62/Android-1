@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentEditPostBinding
 import ru.netology.nmedia.utils.Utils
+import ru.netology.nmedia.viewmodel.CardViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 class EditPostFragment : Fragment() {
@@ -18,6 +19,8 @@ class EditPostFragment : Fragment() {
     private val viewModel: PostViewModel by viewModels(
         ownerProducer = ::requireParentFragment
     )
+
+    private val cardPostViewModel: CardViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -64,7 +67,7 @@ class EditPostFragment : Fragment() {
     }
 
     private fun serverErrorHandler() {
-        viewModel.dataState.observe(viewLifecycleOwner, { state ->
+        cardPostViewModel.post.observe(viewLifecycleOwner, { state ->
             if (state.error) {
                 Toast.makeText(
                     requireContext(),

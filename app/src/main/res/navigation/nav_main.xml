@@ -24,6 +24,9 @@
             app:destination="@id/postCardFragment"
             app:enterAnim="@anim/fragment_open_enter"
             app:exitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_mainFragment_to_photoFragment"
+            app:destination="@id/photoFragment" />
     </fragment>
     <fragment
         android:id="@+id/newPostFragment"
@@ -52,5 +55,15 @@
             android:id="@+id/action_postCardFragment_to_editPostFragment"
             app:destination="@id/editPostFragment"
             app:enterAnim="@anim/fragment_open_enter" />
+        <action
+            android:id="@+id/action_postCardFragment_to_photoFragment"
+            app:destination="@id/photoFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/photoFragment"
+        android:name="ru.netology.nmedia.activity.PhotoFragment"
+        android:label="fragment_photo"
+        tools:layout="@layout/fragment_photo" >
+    </fragment>
+
 </navigation>

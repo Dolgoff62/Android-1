@@ -16,8 +16,7 @@ import ru.netology.nmedia.entity.PostEntity
 import ru.netology.nmedia.entity.toApiEntity
 import ru.netology.nmedia.entity.toDto
 import ru.netology.nmedia.entity.toEntity
-import ru.netology.nmedia.enum.AttachmentType
-import ru.netology.nmedia.error.*
+import ru.netology.nmedia.model.*
 import java.sql.SQLException
 
 class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
@@ -62,9 +61,9 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
         }
     }
 
-    override suspend fun getPostById(id: Long): Post {
+    override suspend fun getPostById(id: Long) : Post {
         try {
-            return dao.getPostById(id)
+            return dao.getPostById(id).toDto()
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
@@ -91,7 +90,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
     override suspend fun postCreationWithAttachment(post: Post, upload: MediaUpload) {
         try {
             val media = upload(upload)
-            // TODO: add support for other types
+
             val postWithAttachment =
                 post.copy(attachment = Attachment(media.id, AttachmentType.IMAGE))
             postCreation(postWithAttachment)

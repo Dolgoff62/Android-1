@@ -9,8 +9,9 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.Nullable
 import androidx.room.TypeConverter
+import ru.netology.nmedia.dto.Attachment
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.enum.AttachmentType
+import ru.netology.nmedia.model.AttachmentType
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.floor
@@ -63,6 +64,10 @@ class Utils {
             }
             return false
         }
+
+        fun checkNumberOfImages(listOfAttachments: List<Attachment>, id: Long): String {
+            TODO()
+        }
     }
 
     object EmptyPost {
@@ -74,7 +79,7 @@ class Utils {
             published = "",
             likeByMe = false,
             numberOfLikes = 0,
-//            attachment = null
+            attachment = null
         )
     }
 
@@ -87,10 +92,4 @@ class Utils {
         override fun getValue(thisRef: Bundle, property: KProperty<*>): String? =
             thisRef.getString(property.name)
     }
-
-    @TypeConverter
-    fun toAttachmentType(value: String) = enumValueOf<AttachmentType>(value)
-    @TypeConverter
-    fun fromAttachmentType(value: AttachmentType) = value.name
-
 }

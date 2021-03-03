@@ -9,9 +9,11 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.model.CardPostModel
 import ru.netology.nmedia.model.PostModel
 import ru.netology.nmedia.repository.PostRepository
 import ru.netology.nmedia.repository.PostRepositoryImpl
+import ru.netology.nmedia.utils.Utils
 
 class CardViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -23,22 +25,22 @@ class CardViewModel(application: Application) : AndroidViewModel(application) {
         likeByMe = false,
         published = "",
         numberOfLikes = 0,
-//    attachment = null
+        attachment = null
     )
 
     private val repository: PostRepository =
         PostRepositoryImpl(AppDb.getInstance(context = application).postDao())
 
-    private val _post = MutableLiveData(PostModel(loading = true, post = empty))
-    val post: LiveData<PostModel>
+    private val _post = MutableLiveData(CardPostModel(loading = true, post = empty))
+    val post: LiveData<CardPostModel>
         get() = _post
 
     fun getPostById(id: Long) = viewModelScope.launch {
         try {
-            _post.value = PostModel(loading = true)
-            _post.value = PostModel(repository.getPostById(id))
+            _post.value = CardPostModel(loading = true)
+            _post.value = CardPostModel(repository.getPostById(id))
         } catch (e: Exception) {
-            _post.value = PostModel(error = true, post = empty)
+            _post.value = CardPostModel(error = true, post = Utils.EmptyPost.emptyPost)
         }
     }
 
@@ -47,7 +49,7 @@ class CardViewModel(application: Application) : AndroidViewModel(application) {
             repository.likeById(id)
             getPostById(id)
         } catch (e: Exception) {
-            _post.value = PostModel(error = true)
+            _post.value = CardPostModel(error = true)
         }
     }
 
@@ -56,7 +58,7 @@ class CardViewModel(application: Application) : AndroidViewModel(application) {
             repository.unlikeById(id)
             getPostById(id)
         } catch (e: Exception) {
-            _post.value = PostModel(error = true)
+            _post.value = CardPostModel(error = true)
         }
     }
 

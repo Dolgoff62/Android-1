@@ -2,9 +2,8 @@ package ru.netology.nmedia.dao
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
-import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.entity.PostEntity
-import ru.netology.nmedia.enum.AttachmentType
+import ru.netology.nmedia.model.AttachmentType
 
 @Dao
 interface PostDao {
@@ -18,7 +17,7 @@ interface PostDao {
     suspend fun showOrNot(showOrNot: Boolean)
 
     @Query("SELECT * FROM PostEntity WHERE id = :id")
-    suspend fun getPostById(id: Long): Post
+    suspend fun getPostById(id: Long): PostEntity
 
     @Query("SELECT COUNT(*) == 0 FROM PostEntity")
     suspend fun isEmpty(): Boolean

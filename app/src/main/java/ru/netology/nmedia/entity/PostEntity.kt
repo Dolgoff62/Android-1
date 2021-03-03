@@ -6,7 +6,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ru.netology.nmedia.dto.Attachment
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.enum.AttachmentType
+import ru.netology.nmedia.model.AttachmentType
 
 @Entity
 data class PostEntity(

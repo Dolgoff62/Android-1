@@ -28,7 +28,7 @@
             android:layout_height="@dimen/netology_avatar_size"
             android:layout_marginBottom="@dimen/common_spacing"
             android:contentDescription="@string/netology_logo"
-            app:layout_constraintBottom_toBottomOf="@id/barrierTopPostFragment"
+            app:layout_constraintBottom_toBottomOf="@id/barrierTopPhotoFragment"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:srcCompat="@sample/avatars" />
@@ -55,7 +55,7 @@
             android:layout_marginStart="@dimen/common_spacing"
             android:layout_marginEnd="@dimen/common_spacing"
             android:layout_marginBottom="@dimen/common_spacing"
-            app:layout_constraintBottom_toBottomOf="@id/barrierTopPostFragment"
+            app:layout_constraintBottom_toBottomOf="@id/barrierTopPhotoFragment"
             app:layout_constraintStart_toEndOf="@id/logoPostFragment"
             app:layout_constraintTop_toBottomOf="@id/tvAuthorPostFragment"
             tools:text="@sample/posts.json/data/published" />
@@ -68,7 +68,7 @@
             android:layout_marginEnd="@dimen/common_spacing"
             android:layout_marginBottom="@dimen/common_spacing"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/barrierTopPostFragment"
+            app:layout_constraintBottom_toBottomOf="@id/barrierTopPhotoFragment"
             app:layout_constraintStart_toEndOf="@id/logoPostFragment"
             app:layout_constraintTop_toBottomOf="@id/publishedPostFragment"
             tools:text="@sample/posts.json/data/edited" />
@@ -97,7 +97,7 @@
             android:clickable="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/barrierTopPostFragment"
+            app:layout_constraintTop_toBottomOf="@id/barrierTopPhotoFragment"
             tools:text="@sample/posts.json/data/content" />
 
         <com.google.android.material.button.MaterialButton
@@ -122,13 +122,14 @@
             android:layout_width="300dp"
             android:layout_height="200dp"
             android:visibility="gone"
+            android:clickable="true"
             app:layout_constraintStart_toStartOf="@id/contentPostFragment"
             app:layout_constraintBottom_toTopOf="@id/barrierBottomPostFragment"
             app:layout_constraintTop_toBottomOf="@id/contentPostFragment"
             android:contentDescription="@string/image_attachment" />
 
         <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrierTopPostFragment"
+            android:id="@+id/barrierTopPhotoFragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="bottom"

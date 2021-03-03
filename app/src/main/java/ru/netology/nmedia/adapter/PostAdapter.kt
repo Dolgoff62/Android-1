@@ -18,6 +18,7 @@ interface OnItemClickListener {
     fun onEdit(post: Post) {}
     fun onDelete(post: Post) {}
     fun onPost(post: Post) {}
+    fun onPhoto(post: Post) {}
 }
 
 class PostAdapter(
@@ -45,9 +46,10 @@ class PostViewHolder(
             tvAuthorPost.text = post.author
 
             val url = "http://10.0.2.2:9999/avatars/${post.authorAvatar}"
-            val urlAttach = "http://10.0.2.2:9999/images/${post.attachment?.url}"
+            val urlAttach = "http://10.0.2.2:9999/media/${post.attachment?.url}"
 
             if (post.authorAvatar != "") {
+
                 Glide.with(logo.context)
                     .load(url)
                     .circleCrop()
@@ -96,6 +98,10 @@ class PostViewHolder(
 
             content.setOnClickListener {
                 onItemClickListener.onPost(post)
+            }
+
+            postImageAttachment.setOnClickListener {
+                onItemClickListener.onPhoto(post)
             }
         }
     }

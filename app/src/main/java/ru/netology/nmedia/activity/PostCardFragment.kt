@@ -5,22 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
-import androidx.room.TypeConverter
 import com.bumptech.glide.Glide
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentPostCardBinding
 import ru.netology.nmedia.dto.Attachment
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.enum.AttachmentType
+import ru.netology.nmedia.model.AttachmentType
 import ru.netology.nmedia.utils.Utils
 import ru.netology.nmedia.viewmodel.CardViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
-import java.util.*
 
 
 class PostCardFragment : Fragment() {
@@ -55,8 +52,6 @@ class PostCardFragment : Fragment() {
             }
         )
 
-        serverErrorHandler()
-
         val binding = FragmentPostCardBinding.inflate(
             inflater,
             container,
@@ -67,7 +62,7 @@ class PostCardFragment : Fragment() {
             tvAuthorPostFragment.text = post.author
 
             val url = "http://10.0.2.2:9999/avatars/${post.authorAvatar}"
-            val urlAttach = "http://10.0.2.2:9999/images/${post.attachment?.url}"
+            val urlAttach = "http://10.0.2.2:9999/media/${post.attachment?.url}"
 
             if (post.authorAvatar != "") {
                 Glide.with(binding.logoPostFragment.context)
@@ -102,6 +97,23 @@ class PostCardFragment : Fragment() {
                 }
             }
 
+            binding.fragmentPostImageAttachment.setOnClickListener {
+                val bundle = Bundle().apply {
+                    putLong("postId", post.id)
+                    putString("author", post.author)
+                    putString("authorAvatar", post.authorAvatar)
+                    putString("content", post.content)
+                    putString("published", post.published)
+                    putBoolean("likeByMe", post.likeByMe)
+                    putInt("numberOfLikes", post.numberOfLikes)
+                    if (post.attachment != null) {
+                        putString("attachmentUrl", post.attachment.url)
+                        putString("attachmentType", post.attachment.type.toString())
+                    }
+                }
+                findNavController().navigate(R.id.action_postCardFragment_to_photoFragment, bundle)
+            }
+
             binding.ibMenuPostFragment.setOnClickListener {
                 PopupMenu(it.context, it).apply {
                     inflate(R.menu.menu_main)
@@ -130,21 +142,5 @@ class PostCardFragment : Fragment() {
             }
         }
         return binding.root
-    }
-
-    private fun serverErrorHandler() {
-        cardPostViewModel.post.observe(owner = viewLifecycleOwner) {
-            if (it.error) {
-                Toast.makeText(
-                    requireContext(),
-                    R.string.error_loading,
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
-            }
-        }
-        viewModel.postCreated.observe(owner = viewLifecycleOwner) {
-            viewModel.loadPosts()
-        }
     }
 }

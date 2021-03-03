@@ -20,7 +20,6 @@ private val logging = HttpLoggingInterceptor().apply {
 
 private val client = OkHttpClient.Builder()
     .addInterceptor(logging)
-//    .addNetworkInterceptor(PostsInterceptor())
     .build()
 
 private val retrofit = Retrofit.Builder()
