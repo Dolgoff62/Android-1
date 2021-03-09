@@ -34,6 +34,7 @@ class PhotoFragment : Fragment() {
 
         val post = Post(
             id = arguments?.getLong("postId") as Long,
+            authorId = arguments?.getLong("authorId") as Long,
             author = arguments?.getString("author") as String,
             authorAvatar = arguments?.getString("authorAvatar") as String,
             content = arguments?.getString("content") as String,
@@ -85,7 +86,7 @@ class PhotoFragment : Fragment() {
                 }
             }
 
-            binding.mbBackFromPhotoFragment.setOnClickListener{
+            binding.mbBackFromPhotoFragment.setOnClickListener {
                 findNavController().navigateUp()
             }
         }

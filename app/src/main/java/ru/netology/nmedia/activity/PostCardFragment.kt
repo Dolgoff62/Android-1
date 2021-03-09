@@ -34,6 +34,7 @@ class PostCardFragment : Fragment() {
 
         val post = Post(
             id = arguments?.getLong("postId") as Long,
+            authorId = arguments?.getLong("authorId") as Long,
             author = arguments?.getString("author") as String,
             authorAvatar = arguments?.getString("authorAvatar") as String,
             content = arguments?.getString("content") as String,
@@ -116,7 +117,7 @@ class PostCardFragment : Fragment() {
 
             binding.ibMenuPostFragment.setOnClickListener {
                 PopupMenu(it.context, it).apply {
-                    inflate(R.menu.menu_main)
+                    inflate(R.menu.menu_options)
                     setOnMenuItemClickListener { item ->
                         when (item.itemId) {
                             R.id.menuItemDelete -> {

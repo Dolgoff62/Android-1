@@ -8,4 +8,6 @@
     <color name="colorRed">#ff0000</color>
     <color name="colorDarkGrey">#5b5555</color>
     <color name="divider_color">#ccc</color>
+    <color name="background_superLightGrey">#EEEEEE</color>
+    <color name="colorWhite">#FFFFFF</color>
 </resources>

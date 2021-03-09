@@ -50,6 +50,7 @@
         android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:contentDescription="@string/menu_button"
+        android:visibility="invisible"
         app:icon="@drawable/ic_baseline_more_vert_24"
         app:iconGravity="end"
         app:iconTint="@color/colorMediumGrey"

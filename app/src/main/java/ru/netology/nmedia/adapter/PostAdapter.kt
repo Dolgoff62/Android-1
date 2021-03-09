@@ -72,9 +72,11 @@ class PostViewHolder(
                     .into(binding.postImageAttachment)
             }
 
+            ibMenu.visibility = if(post.ownedByMe) View.VISIBLE else View.INVISIBLE
+
             ibMenu.setOnClickListener {
                 PopupMenu(it.context, it).apply {
-                    inflate(R.menu.menu_main)
+                    inflate(R.menu.menu_options)
                     setOnMenuItemClickListener { item ->
                         when (item.itemId) {
                             R.id.menuItemDelete -> {
