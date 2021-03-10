@@ -85,7 +85,7 @@ class MainFragment : Fragment() {
         val adapter = PostAdapter(object : OnItemClickListener {
 
             override fun onLike(post: Post) {
-                if (authViewModel.authenticated && post.authorId == AppAuth.getInstance().authStateFlow.value.id) {
+                if (authViewModel.authenticated) {
                     if (!post.likeByMe) {
                         viewModel.likeById(post.id)
 

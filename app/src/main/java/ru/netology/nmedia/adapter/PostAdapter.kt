@@ -109,7 +109,7 @@ class PostViewHolder(
     }
 
     private fun CardPostBinding.likeButtonChange(post: Post) {
-        if (post.ownedByMe && post.likeByMe) {
+        if (post.likeByMe) {
             likeButton.setIconResource(R.drawable.ic_baseline_favorite_24)
             likeButton.setIconTintResource(R.color.colorRed)
         } else {

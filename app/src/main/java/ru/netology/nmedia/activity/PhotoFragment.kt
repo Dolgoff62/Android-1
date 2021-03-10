@@ -4,24 +4,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.accessibility.AccessibilityEventCompat.setAction
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentPhotoBinding
 import ru.netology.nmedia.dto.Attachment
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.AttachmentType
 import ru.netology.nmedia.utils.Utils
+import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.CardViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 
 class PhotoFragment : Fragment() {
 
-    private val viewModel: PostViewModel by viewModels(
+    private val authViewModel: AuthViewModel by viewModels(
         ownerProducer = ::requireParentFragment
     )
 
@@ -76,10 +79,21 @@ class PhotoFragment : Fragment() {
             }
 
             binding.likeButtonPhotoFragment.setOnClickListener {
-                if (!post.likeByMe) {
+                if (!post.likeByMe && authViewModel.authenticated) {
                     cardPostViewModel.likeById(post.id)
-                } else {
+                } else if (post.likeByMe && authViewModel.authenticated) {
                     cardPostViewModel.unlikeById(post.id)
+                } else {
+                    Snackbar.make(
+                        binding.root,
+                        getString(R.string.authorization_required),
+                        Snackbar.LENGTH_LONG
+                    )
+                        .setAction(getString(R.string.authorize)) {
+                            findNavController().navigate(R.id.action_photoFragment_to_authFragment)
+                        }
+                        .show()
+                    returnTransition
                 }
                 cardPostViewModel.post.observe(owner = viewLifecycleOwner) {
                     val newPost = it.post

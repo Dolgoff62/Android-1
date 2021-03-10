@@ -64,12 +64,18 @@
         <action
             android:id="@+id/action_postCardFragment_to_photoFragment"
             app:destination="@id/photoFragment" />
+        <action
+            android:id="@+id/action_postCardFragment_to_authFragment"
+            app:destination="@id/authFragment" />
     </fragment>
     <fragment
         android:id="@+id/photoFragment"
         android:name="ru.netology.nmedia.activity.PhotoFragment"
         android:label="fragment_photo"
         tools:layout="@layout/fragment_photo" >
+        <action
+            android:id="@+id/action_photoFragment_to_authFragment"
+            app:destination="@id/authFragment" />
     </fragment>
     <fragment
         android:id="@+id/authFragment"
