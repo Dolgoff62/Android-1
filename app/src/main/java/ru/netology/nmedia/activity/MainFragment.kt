@@ -85,7 +85,7 @@ class MainFragment : Fragment() {
         val adapter = PostAdapter(object : OnItemClickListener {
 
             override fun onLike(post: Post) {
-                if (authViewModel.authenticated) {
+                if (authViewModel.authenticated && post.authorId == AppAuth.getInstance().authStateFlow.value.id) {
                     if (!post.likeByMe) {
                         viewModel.likeById(post.id)
 
@@ -102,6 +102,7 @@ class MainFragment : Fragment() {
                             findNavController().navigate(R.id.action_mainFragment_to_authFragment)
                         }
                         .show()
+                    returnTransition
                 }
             }
 

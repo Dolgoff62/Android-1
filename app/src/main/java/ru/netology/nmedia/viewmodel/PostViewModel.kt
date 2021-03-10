@@ -130,6 +130,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         }
         edited.value =
             edited.value?.copy(
+                id = postId,
                 content = text,
                 ownedByMe = true
             )

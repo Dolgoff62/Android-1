@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentPhotoBinding
 import ru.netology.nmedia.dto.Attachment
 import ru.netology.nmedia.dto.Post
@@ -64,7 +65,7 @@ class PhotoFragment : Fragment() {
             val urlAttach = "http://10.0.2.2:9999/media/${post.attachment?.url}"
 
             likeButtonPhotoFragment.text = Utils.formatLikes(post.numberOfLikes)
-            likeButtonPhotoFragment.isChecked = post.likeByMe
+            likeButtonChange(post)
 
             if (post.attachment != null) {
                 binding.photoView.visibility = View.VISIBLE
@@ -83,6 +84,7 @@ class PhotoFragment : Fragment() {
                 cardPostViewModel.post.observe(owner = viewLifecycleOwner) {
                     val newPost = it.post
                     binding.likeButtonPhotoFragment.text = Utils.formatLikes(newPost.numberOfLikes)
+                    likeButtonChange(newPost)
                 }
             }
 
@@ -91,5 +93,15 @@ class PhotoFragment : Fragment() {
             }
         }
         return binding.root
+    }
+
+    private fun FragmentPhotoBinding.likeButtonChange(post: Post) {
+        if (post.likeByMe) {
+            likeButtonPhotoFragment.setIconResource(R.drawable.ic_baseline_favorite_24)
+            likeButtonPhotoFragment.setIconTintResource(R.color.colorRed)
+        } else {
+            likeButtonPhotoFragment.setIconResource(R.drawable.ic_baseline_favorite_border_24)
+            likeButtonPhotoFragment.setIconTintResource(R.color.colorDarkGrey)
+        }
     }
 }

@@ -8,18 +8,18 @@
         <item name="chipStyle">@style/Widget.MaterialComponents.Chip.Action</item>
     </style>
 
-    <style name="AppCheckableButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+    <style name="AppCheckableButton" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="android:checkable">true</item>
-        <item name="android:textColor">@color/colorLightGrey</item>
         <item name="android:background">@android:color/transparent</item>
     </style>
 
     <style name="AppNormalButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColor">@color/colorDarkGrey</item>
     </style>
 
     <style name="Widget.AppTheme.IconButton" parent="Widget.MaterialComponents.Button.TextButton.Icon">
-        <item name="iconTint">@color/icon_button_tint</item>
+        <item name="iconTint">@color/colorLightGrey</item>
         <item name="iconPadding">0dp</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>

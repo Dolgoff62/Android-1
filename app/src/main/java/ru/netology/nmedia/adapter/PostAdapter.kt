@@ -60,7 +60,7 @@ class PostViewHolder(
             published.text = post.published
             content.text = post.content
             likeButton.text = Utils.formatLikes(post.numberOfLikes)
-            likeButton.isChecked = post.likeByMe
+            likeButtonChange(post)
 
             if (post.attachment == null) {
                 binding.postImageAttachment.visibility = View.GONE
@@ -107,6 +107,16 @@ class PostViewHolder(
             }
         }
     }
+
+    private fun CardPostBinding.likeButtonChange(post: Post) {
+        if (post.ownedByMe && post.likeByMe) {
+            likeButton.setIconResource(R.drawable.ic_baseline_favorite_24)
+            likeButton.setIconTintResource(R.color.colorRed)
+        } else {
+            likeButton.setIconResource(R.drawable.ic_baseline_favorite_border_24)
+            likeButton.setIconTintResource(R.color.colorDarkGrey)
+        }
+    }
 }
 
 class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
@@ -118,4 +128,3 @@ class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
         return oldItem == newItem
     }
 }
-

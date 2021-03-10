@@ -33,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/user_text"
-        android:layout_marginStart="100dp"
+        android:layout_marginStart="70dp"
         android:layout_toEndOf="@+id/user_text"
         android:hint="@string/enter_name"
         android:autofillHints="">

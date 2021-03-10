@@ -76,7 +76,8 @@ class PostCardFragment : Fragment() {
             publishedPostFragment.text = post.published
             contentPostFragment.text = post.content
             likeButtonPostFragment.text = Utils.formatLikes(post.numberOfLikes)
-            likeButtonPostFragment.isChecked = post.likeByMe
+            likeButtonChange(post)
+
 
             if (post.attachment != null) {
                 binding.fragmentPostImageAttachment.visibility = View.VISIBLE
@@ -95,6 +96,7 @@ class PostCardFragment : Fragment() {
                 cardPostViewModel.post.observe(owner = viewLifecycleOwner) {
                     val newPost = it.post
                     binding.likeButtonPostFragment.text = Utils.formatLikes(newPost.numberOfLikes)
+                    likeButtonChange(newPost)
                 }
             }
 
@@ -143,5 +145,15 @@ class PostCardFragment : Fragment() {
             }
         }
         return binding.root
+    }
+
+    private fun FragmentPostCardBinding.likeButtonChange(newPost: Post) {
+        if (newPost.likeByMe) {
+            likeButtonPostFragment.setIconResource(R.drawable.ic_baseline_favorite_24)
+            likeButtonPostFragment.setIconTintResource(R.color.colorRed)
+        } else {
+            likeButtonPostFragment.setIconResource(R.drawable.ic_baseline_favorite_border_24)
+            likeButtonPostFragment.setIconTintResource(R.color.colorDarkGrey)
+        }
     }
 }

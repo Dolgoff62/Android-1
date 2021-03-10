@@ -20,19 +20,17 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/likeButtonPhotoFragment"
-        style="@style/AppCheckableButton"
+        style="@style/AppNormalButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/common_spacing"
         android:layout_marginStart="@dimen/common_spacing"
         android:background="@android:color/transparent"
-        android:checkable="true"
         android:contentDescription="@string/like_button"
         android:text="111"
-        android:textAppearance="@style/TextStyle"
         android:elevation="2dp"
-        app:icon="@drawable/selector_like"
-        app:iconTint="@color/selector_like_color"
+        android:textAppearance="@style/TextStyle"
+        app:icon="@drawable/ic_baseline_favorite_border_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
