@@ -4,23 +4,20 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils.isEmpty
-import android.util.Patterns
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.Nullable
-import androidx.room.TypeConverter
-import ru.netology.nmedia.dto.Attachment
 import ru.netology.nmedia.dto.AuthUser
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.model.AttachmentType
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.math.floor
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 
 class Utils {
+
     companion object {
         fun formatLikes(count: Int): String {
             return when (count) {
@@ -34,21 +31,20 @@ class Utils {
             }
         }
 
-        fun localDateTime(): String {
-            val current = LocalDateTime.now()
-            val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy в HH:mm")
-            return current.format(formatter).toString()
+        fun convertDate(dateInMilliseconds: String): String {
+            return try {
+                val sdf = SimpleDateFormat("dd MMMM yyyy  hh:mm", Locale.getDefault())
+                val netDate = Date(dateInMilliseconds.toLong() * 1000)
+                sdf.format(netDate)
+            } catch (e: Exception) {
+                e.toString()
+            }
         }
 
         fun hideKeyboard(view: View) {
             val imm =
                 view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view.windowToken, 0)
-        }
-
-        fun urlValidChecker(link: String): Boolean {
-            val videoLink = link.trim()
-            return Patterns.WEB_URL.matcher(videoLink).matches()
         }
 
         fun startIntent(context: Context, @Nullable intent: Intent?): Boolean {
@@ -65,14 +61,10 @@ class Utils {
             }
             return false
         }
-
-        fun checkNumberOfImages(listOfAttachments: List<Attachment>, id: Long): String {
-            TODO()
-        }
     }
 
     object EmptyPost {
-        val emptyPost = Post(
+        val empty = Post(
             id = 0L,
             authorId = 0L,
             author = "",

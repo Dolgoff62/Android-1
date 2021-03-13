@@ -10,6 +10,7 @@ interface UserRepository {
         pass: String,
         name: String,
         upload: MediaUpload?
-    ) : AuthUser
+    ): AuthUser
+
     suspend fun upload(upload: MediaUpload): Media
 }

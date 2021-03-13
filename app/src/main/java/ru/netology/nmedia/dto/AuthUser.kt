@@ -1,4 +1,3 @@
-
 package ru.netology.nmedia.dto
 
 data class AuthUser(

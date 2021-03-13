@@ -65,7 +65,7 @@
     <string name="pass_miss">Пароли не совпадают!</string>
     <string name="add_avatar">Добавьте аватар:</string>
     <string name="сhoose_avatar">Выбрать аватар</string>
-    <string name="Registration_done">Регистрация завершена. Залогиньтесь со своими данными на главном экране.</string>
+    <string name="Registration_done">Регистрация завершена</string>
     <string name="server_error_string">Возникла проблема на сервере</string>
     <string name="notification_for_user">Пользователю с id: %1$s пришло уведомление: %2$s</string>
     <string name="notification_for_all">%1$s</string>

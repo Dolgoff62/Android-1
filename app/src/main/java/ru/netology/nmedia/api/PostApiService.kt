@@ -67,7 +67,6 @@ interface PostApi {
     @POST("users/push-tokens")
     suspend fun sendPushToken(@Body token: PushToken): Response<Unit>
 
-
     @Multipart
     @POST("media")
     suspend fun upload(@Part media: MultipartBody.Part): Response<Media>

@@ -2,7 +2,9 @@ package ru.netology.nmedia.viewmodel
 
 import android.app.Application
 import android.net.Uri
+import androidx.core.net.toFile
 import androidx.lifecycle.*
+import androidx.work.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -13,32 +15,28 @@ import kotlinx.coroutines.launch
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.MediaUpload
-import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.FeedModel
 import ru.netology.nmedia.model.FeedModelState
 import ru.netology.nmedia.model.PhotoModel
 import ru.netology.nmedia.repository.PostRepository
 import ru.netology.nmedia.repository.PostRepositoryImpl
 import ru.netology.nmedia.util.SingleLiveEvent
+import ru.netology.nmedia.utils.Utils
+import ru.netology.nmedia.work.DeletePostWorker
+import ru.netology.nmedia.work.SavePostWorker
 import java.io.File
-
-private val empty = Post(
-    id = 0L,
-    authorId = 0L,
-    content = "",
-    author = "",
-    authorAvatar = "",
-    likeByMe = false,
-    published = "",
-    numberOfLikes = 0,
-    attachment = null
-)
 
 private val noPhoto = PhotoModel()
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: PostRepository =
-        PostRepositoryImpl(AppDb.getInstance(context = application).postDao())
+        PostRepositoryImpl(
+            AppDb.getInstance(context = application).postDao(),
+            AppDb.getInstance(context = application).postWorkerDao()
+        )
+
+    private val workManager: WorkManager =
+        WorkManager.getInstance(application)
 
     @ExperimentalCoroutinesApi
     val data: LiveData<FeedModel> = AppAuth.getInstance()
@@ -64,7 +62,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             .asLiveData()
     }
 
-    private val edited = MutableLiveData(empty)
+    private val edited = MutableLiveData(Utils.EmptyPost.empty)
 
     private val _postCreated = SingleLiveEvent<Unit>()
     val postCreated: LiveData<Unit>
@@ -88,16 +86,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun refreshPosts() = viewModelScope.launch {
-        try {
-            _dataState.value = FeedModelState(refreshing = true)
-            repository.getAll()
-            _dataState.value = FeedModelState()
-        } catch (e: Exception) {
-            _dataState.value = FeedModelState(error = true)
-        }
-    }
-
     fun makeReadPosts() = CoroutineScope(Dispatchers.IO).launch {
         repository.markPostToShow()
     }
@@ -107,23 +95,30 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             _postCreated.value = Unit
             viewModelScope.launch {
                 try {
-                    when(_photo.value) {
-                        noPhoto -> repository.postCreation(it)
-                        else -> _photo.value?.file?.let { file ->
-                            repository.postCreationWithAttachment(it, MediaUpload(file))
-                        }
-                    }
+                    val id: Long = repository.postCreationWork(
+                        it, _photo.value?.uri?.let { MediaUpload(it.toFile()) }
+                    )
+                    val data = workDataOf(SavePostWorker.postKey to id)
+                    val constraints = Constraints.Builder()
+                        .setRequiredNetworkType(NetworkType.CONNECTED)
+                        .build()
+                    val request = OneTimeWorkRequestBuilder<SavePostWorker>()
+                        .setInputData(data)
+                        .setConstraints(constraints)
+                        .build()
+                    workManager.enqueue(request)
+
                     _dataState.value = FeedModelState()
                 } catch (e: Exception) {
                     _dataState.value = FeedModelState(error = true)
                 }
             }
         }
-        edited.value = empty
+        edited.value = Utils.EmptyPost.empty
         _photo.value = noPhoto
     }
 
-    fun changeContent(postId: Long, content: String) {
+    fun changeContent(postId: Long, content: String, newPost: Boolean) {
         val text = content.trim()
         if (edited.value?.content == text) {
             return
@@ -132,7 +127,8 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             edited.value?.copy(
                 id = postId,
                 content = text,
-                ownedByMe = true
+                ownedByMe = true,
+                newPost = newPost
             )
     }
 
@@ -153,7 +149,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
         }
-        edited.value = empty
+        edited.value = Utils.EmptyPost.empty
     }
 
     fun unlikeById(id: Long) {
@@ -168,7 +164,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
         }
-        edited.value = empty
+        edited.value = Utils.EmptyPost.empty
     }
 
     fun deleteById(id: Long) {
@@ -176,13 +172,23 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             _postCreated.value = Unit
             viewModelScope.launch {
                 try {
-                    repository.deleteById(id)
+                    val data = workDataOf(DeletePostWorker.postKey to id)
+
+                    val constraints = Constraints.Builder()
+                        .setRequiredNetworkType(NetworkType.CONNECTED)
+                        .build()
+                    val request = OneTimeWorkRequestBuilder<DeletePostWorker>()
+                        .setInputData(data)
+                        .setConstraints(constraints)
+                        .build()
+
+                    workManager.enqueue(request)
                     _dataState.value = FeedModelState()
                 } catch (e: Exception) {
                     _dataState.value = FeedModelState(error = true)
                 }
             }
         }
-        edited.value = empty
+        edited.value = Utils.EmptyPost.empty
     }
 }

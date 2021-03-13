@@ -52,7 +52,7 @@ class PostCardFragment : Fragment() {
             } else {
                 Attachment(
                     url = arguments?.getString("attachmentUrl") as String,
-                    type = enumValueOf<AttachmentType>(
+                    type = enumValueOf(
                         arguments?.getString("attachmentType")!!
                     )
                 )
@@ -79,7 +79,7 @@ class PostCardFragment : Fragment() {
                     .into(binding.logoPostFragment)
             }
 
-            publishedPostFragment.text = post.published
+            publishedPostFragment.text = Utils.convertDate(post.published)
             contentPostFragment.text = post.content
             likeButtonPostFragment.text = Utils.formatLikes(post.numberOfLikes)
             likeButtonChange(post)
@@ -113,6 +113,7 @@ class PostCardFragment : Fragment() {
                 cardPostViewModel.post.observe(owner = viewLifecycleOwner) {
                     val newPost = it.post
                     binding.likeButtonPostFragment.text = Utils.formatLikes(newPost.numberOfLikes)
+                    binding.contentPostFragment.text = newPost.content
                     likeButtonChange(newPost)
                 }
             }

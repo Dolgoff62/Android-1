@@ -4,10 +4,10 @@ import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.Utils
 
 data class CardPostModel(
-    val post: Post = Utils.EmptyPost.emptyPost,
+    val post: Post = Utils.EmptyPost.empty,
     val loading: Boolean = false,
     val errorVisible: Boolean = false,
     val error: Boolean = false,
-    val refreshing: Boolean = false,
+    val refreshing: Boolean = false
 )
 

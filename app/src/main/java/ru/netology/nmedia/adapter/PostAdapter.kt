@@ -57,7 +57,7 @@ class PostViewHolder(
                     .into(logo)
             }
 
-            published.text = post.published
+            published.text = Utils.convertDate(post.published)
             content.text = post.content
             likeButton.text = Utils.formatLikes(post.numberOfLikes)
             likeButtonChange(post)
@@ -72,7 +72,7 @@ class PostViewHolder(
                     .into(binding.postImageAttachment)
             }
 
-            ibMenu.visibility = if(post.ownedByMe) View.VISIBLE else View.INVISIBLE
+            ibMenu.visibility = if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
 
             ibMenu.setOnClickListener {
                 PopupMenu(it.context, it).apply {

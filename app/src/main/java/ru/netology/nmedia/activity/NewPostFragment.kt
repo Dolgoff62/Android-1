@@ -57,7 +57,7 @@ class NewPostFragment : Fragment() {
         return when (item.itemId) {
             R.id.save -> {
                 fragmentBinding?.let {
-                    viewModel.changeContent(0, it.etInputArea.text.toString())
+                    viewModel.changeContent(0, it.etInputArea.text.toString(), true)
                     viewModel.postCreation()
                     Utils.hideKeyboard(requireView())
                     if (prefs != null) {

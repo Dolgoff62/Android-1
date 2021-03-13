@@ -1,4 +1,3 @@
-
 package ru.netology.nmedia.viewmodel
 
 import android.app.Application
@@ -8,31 +7,25 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.db.AppDb
-import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.CardPostModel
-import ru.netology.nmedia.model.PostModel
 import ru.netology.nmedia.repository.PostRepository
 import ru.netology.nmedia.repository.PostRepositoryImpl
 import ru.netology.nmedia.utils.Utils
 
 class CardViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val empty = Post(
-        id = 0L,
-        authorId = 0L,
-        content = "",
-        author = "",
-        authorAvatar = "",
-        likeByMe = false,
-        published = "",
-        numberOfLikes = 0,
-        attachment = null
-    )
-
     private val repository: PostRepository =
-        PostRepositoryImpl(AppDb.getInstance(context = application).postDao())
+        PostRepositoryImpl(
+            AppDb.getInstance(context = application).postDao(),
+            AppDb.getInstance(context = application).postWorkerDao()
+        )
 
-    private val _post = MutableLiveData(CardPostModel(loading = true, post = empty))
+    private val _post = MutableLiveData(
+        CardPostModel(
+            loading = true,
+            post = Utils.EmptyPost.empty
+        )
+    )
     val post: LiveData<CardPostModel>
         get() = _post
 
@@ -41,7 +34,7 @@ class CardViewModel(application: Application) : AndroidViewModel(application) {
             _post.value = CardPostModel(loading = true)
             _post.value = CardPostModel(repository.getPostById(id))
         } catch (e: Exception) {
-            _post.value = CardPostModel(error = true, post = Utils.EmptyPost.emptyPost)
+            _post.value = CardPostModel(error = true, post = Utils.EmptyPost.empty)
         }
     }
 

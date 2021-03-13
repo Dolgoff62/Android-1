@@ -15,6 +15,7 @@ import ru.netology.nmedia.utils.Utils
 import ru.netology.nmedia.viewmodel.AuthViewModel
 
 class AuthFragment : Fragment() {
+
     private val viewModel: AuthViewModel by viewModels(
         ownerProducer = ::requireParentFragment
     )

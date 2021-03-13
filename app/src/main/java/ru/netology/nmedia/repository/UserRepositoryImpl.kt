@@ -15,6 +15,7 @@ import ru.netology.nmedia.model.NetworkError
 import ru.netology.nmedia.model.UnknownError
 
 class UserRepositoryImpl : UserRepository {
+
     override suspend fun updateUser(login: String, pass: String): AuthUser {
         try {
             val response = PostApiService.api.updateUser(login, pass)
