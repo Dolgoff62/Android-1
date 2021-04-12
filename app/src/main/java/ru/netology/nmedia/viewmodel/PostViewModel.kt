@@ -30,14 +30,14 @@ import javax.inject.Inject
 
 private val noPhoto = PhotoModel()
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
-class PostViewModel @Inject constructor (
+class PostViewModel @Inject constructor(
     private val repository: PostRepository,
     private val workManager: WorkManager,
     auth: AppAuth
-        ) : ViewModel() {
+) : ViewModel() {
 
-    @ExperimentalCoroutinesApi
     val data: LiveData<FeedModel> = auth
         .authStateFlow
         .flatMapLatest { (myId, _) ->
@@ -54,7 +54,6 @@ class PostViewModel @Inject constructor (
     val dataState: LiveData<FeedModelState>
         get() = _dataState
 
-    @ExperimentalCoroutinesApi
     val newerCount: LiveData<Int> = data.switchMap {
         repository.getNewerCount(it.posts.firstOrNull()?.id ?: 0L)
             .catch { e -> e.printStackTrace() }
@@ -87,6 +86,16 @@ class PostViewModel @Inject constructor (
 
     fun makeReadPosts() = CoroutineScope(Dispatchers.IO).launch {
         repository.markPostToShow()
+    }
+
+    fun refreshPosts() = viewModelScope.launch {
+        try {
+            _dataState.value = FeedModelState(refreshing = true)
+            repository.getAll()
+            _dataState.value = FeedModelState()
+        } catch (e: Exception) {
+            _dataState.value = FeedModelState(error = true)
+        }
     }
 
     fun postCreation() {
@@ -166,28 +175,25 @@ class PostViewModel @Inject constructor (
         edited.value = Utils.EmptyPost.empty
     }
 
-    fun deleteById(id: Long) {
-        edited.value?.let {
-            _postCreated.value = Unit
-            viewModelScope.launch {
-                try {
-                    val data = workDataOf(DeletePostWorker.postKey to id)
+    fun deleteById(id: Long) = viewModelScope.launch {
+        try {
+            val data = workDataOf(DeletePostWorker.postKey to id)
 
-                    val constraints = Constraints.Builder()
-                        .setRequiredNetworkType(NetworkType.CONNECTED)
-                        .build()
-                    val request = OneTimeWorkRequestBuilder<DeletePostWorker>()
-                        .setInputData(data)
-                        .setConstraints(constraints)
-                        .build()
+            val constraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
+            val request = OneTimeWorkRequestBuilder<DeletePostWorker>()
+                .setInputData(data)
+                .setConstraints(constraints)
+                .build()
 
-                    workManager.enqueue(request)
-                    _dataState.value = FeedModelState()
-                } catch (e: Exception) {
-                    _dataState.value = FeedModelState(error = true)
-                }
-            }
+            workManager.enqueue(request)
+            loadPosts()
+            _dataState.value = FeedModelState()
+        } catch (e: Exception) {
+            _dataState.value = FeedModelState(error = true)
         }
-        edited.value = Utils.EmptyPost.empty
     }
 }
+
+

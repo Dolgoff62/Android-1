@@ -17,7 +17,7 @@ fun authInterceptor(auth: AppAuth) = fun(chain: Interceptor.Chain): Response {
         val newRequest = chain.request().newBuilder()
             .addHeader("Authorization", token)
             .build()
-        return@let chain.proceed(newRequest)
+        return chain.proceed(newRequest)
     }
     return chain.proceed(chain.request())
 }

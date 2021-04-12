@@ -30,6 +30,7 @@ class MainFragment : Fragment() {
 
     @Inject
     lateinit var auth: AppAuth
+
     private val viewModel: PostViewModel by viewModels(
         ownerProducer = ::requireParentFragment
     )

@@ -42,3 +42,11 @@ interface PostDao {
     @Query("DELETE FROM PostEntity WHERE id = :id")
     suspend fun deleteById(id: Long)
 }
+
+class Converters {
+    @TypeConverter
+    fun toAttachmentType(value: String) = enumValueOf<AttachmentType>(value)
+
+    @TypeConverter
+    fun fromAttachment(value: AttachmentType) = value.name
+}
