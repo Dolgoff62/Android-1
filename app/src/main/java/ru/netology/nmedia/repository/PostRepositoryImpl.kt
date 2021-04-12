@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okio.IOException
-import ru.netology.nmedia.api.PostApiService
+import ru.netology.nmedia.api.PostApi
 import ru.netology.nmedia.dao.PostDao
 import ru.netology.nmedia.dao.PostWorkerDao
 import ru.netology.nmedia.dto.Attachment
@@ -19,17 +19,21 @@ import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.entity.*
 import ru.netology.nmedia.model.*
 import java.sql.SQLException
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class PostRepositoryImpl(
+@Singleton
+class PostRepositoryImpl @Inject constructor(
     private val dao: PostDao,
-    private val postWorkerDao: PostWorkerDao
+    private val postWorkerDao: PostWorkerDao,
+    private val postApi: PostApi
 ) : PostRepository {
     override val data = dao.getAll().map(List<PostEntity>::toDto).flowOn(Dispatchers.Default)
 
     override fun getNewerCount(id: Long): Flow<Int> = flow {
         while (true) {
             delay(10_000L)
-            val response = PostApiService.api.getNewer(id)
+            val response = postApi.getNewer(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -44,7 +48,7 @@ class PostRepositoryImpl(
 
     override suspend fun getAll() {
         try {
-            val response = PostApiService.api.getAll()
+            val response = postApi.getAll()
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -77,7 +81,7 @@ class PostRepositoryImpl(
 
     override suspend fun postCreation(post: Post) {
         try {
-            val response = PostApiService.api.postCreation(post)
+            val response = postApi.postCreation(post)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -95,7 +99,7 @@ class PostRepositoryImpl(
             val media = MultipartBody.Part.createFormData(
                 "file", upload.file.name, upload.file.asRequestBody()
             )
-            val response = PostApiService.api.upload(media)
+            val response = postApi.upload(media)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -154,7 +158,7 @@ class PostRepositoryImpl(
         dao.likeById(id)
 
         try {
-            val response = PostApiService.api.likeById(id)
+            val response = postApi.likeById(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -170,7 +174,7 @@ class PostRepositoryImpl(
         dao.likeById(id)
 
         try {
-            val response = PostApiService.api.unlikeById(id)
+            val response = postApi.unlikeById(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -185,7 +189,7 @@ class PostRepositoryImpl(
 
     override suspend fun deleteById(id: Long) {
         try {
-            val response = PostApiService.api.deleteById(id)
+            val response = postApi.deleteById(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }

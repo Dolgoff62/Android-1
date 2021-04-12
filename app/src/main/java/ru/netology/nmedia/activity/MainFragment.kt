@@ -1,7 +1,9 @@
 package ru.netology.nmedia.activity
 
+import android.os.Build
 import android.os.Bundle
 import android.view.*
+import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -9,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.OnItemClickListener
@@ -18,11 +21,15 @@ import ru.netology.nmedia.databinding.FragmentMainBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
+import javax.inject.Inject
 
 
+@AndroidEntryPoint
 @Suppress("DUPLICATE_LABEL_IN_WHEN")
 class MainFragment : Fragment() {
 
+    @Inject
+    lateinit var auth: AppAuth
     private val viewModel: PostViewModel by viewModels(
         ownerProducer = ::requireParentFragment
     )
@@ -55,13 +62,14 @@ class MainFragment : Fragment() {
             }
 
             R.id.signout -> {
-                AppAuth.getInstance().removeAuth()
+                auth.removeAuth()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @ExperimentalCoroutinesApi
     override fun onCreateView(
         inflater: LayoutInflater,

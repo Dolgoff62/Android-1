@@ -5,7 +5,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okio.IOException
-import ru.netology.nmedia.api.PostApiService
+import ru.netology.nmedia.api.PostApi
 import ru.netology.nmedia.dto.AuthUser
 import ru.netology.nmedia.dto.Media
 import ru.netology.nmedia.dto.MediaUpload
@@ -13,12 +13,15 @@ import ru.netology.nmedia.model.ApiError
 import ru.netology.nmedia.model.AppError
 import ru.netology.nmedia.model.NetworkError
 import ru.netology.nmedia.model.UnknownError
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class UserRepositoryImpl : UserRepository {
+@Singleton
+class UserRepositoryImpl @Inject constructor(private val postApi: PostApi) : UserRepository {
 
     override suspend fun updateUser(login: String, pass: String): AuthUser {
         try {
-            val response = PostApiService.api.updateUser(login, pass)
+            val response = postApi.updateUser(login, pass)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -32,7 +35,7 @@ class UserRepositoryImpl : UserRepository {
 
     override suspend fun registrationUser(login: String, pass: String, name: String): AuthUser {
         try {
-            val response = PostApiService.api.registrationUser(login, pass, name)
+            val response = postApi.registrationUser(login, pass, name)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -57,7 +60,7 @@ class UserRepositoryImpl : UserRepository {
                     "file", upload.file.name, it
                 )
             }.let {
-                PostApiService.api.registrationUserWithAvatar(
+                postApi.registrationUserWithAvatar(
                     login.toRequestBody("text/plain".toMediaType()),
                     pass.toRequestBody("text/plain".toMediaType()),
                     name.toRequestBody("text/plain".toMediaType()),
@@ -83,7 +86,7 @@ class UserRepositoryImpl : UserRepository {
                 "file", upload.file.name, upload.file.asRequestBody()
             )
 
-            val response = PostApiService.api.upload(media)
+            val response = postApi.upload(media)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }

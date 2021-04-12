@@ -1,24 +1,19 @@
 package ru.netology.nmedia.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.model.CardPostModel
 import ru.netology.nmedia.repository.PostRepository
-import ru.netology.nmedia.repository.PostRepositoryImpl
 import ru.netology.nmedia.utils.Utils
+import javax.inject.Inject
 
-class CardViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository: PostRepository =
-        PostRepositoryImpl(
-            AppDb.getInstance(context = application).postDao(),
-            AppDb.getInstance(context = application).postWorkerDao()
-        )
+@HiltViewModel
+class CardViewModel @Inject constructor(private val repository: PostRepository) : ViewModel() {
 
     private val _post = MutableLiveData(
         CardPostModel(
@@ -55,5 +50,4 @@ class CardViewModel(application: Application) : AndroidViewModel(application) {
             _post.value = CardPostModel(error = true)
         }
     }
-
 }

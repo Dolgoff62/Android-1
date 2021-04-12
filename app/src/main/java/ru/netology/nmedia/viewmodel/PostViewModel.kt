@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.core.net.toFile
 import androidx.lifecycle.*
 import androidx.work.*
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,21 +26,19 @@ import ru.netology.nmedia.utils.Utils
 import ru.netology.nmedia.work.DeletePostWorker
 import ru.netology.nmedia.work.SavePostWorker
 import java.io.File
+import javax.inject.Inject
 
 private val noPhoto = PhotoModel()
 
-class PostViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository: PostRepository =
-        PostRepositoryImpl(
-            AppDb.getInstance(context = application).postDao(),
-            AppDb.getInstance(context = application).postWorkerDao()
-        )
-
-    private val workManager: WorkManager =
-        WorkManager.getInstance(application)
+@HiltViewModel
+class PostViewModel @Inject constructor (
+    private val repository: PostRepository,
+    private val workManager: WorkManager,
+    auth: AppAuth
+        ) : ViewModel() {
 
     @ExperimentalCoroutinesApi
-    val data: LiveData<FeedModel> = AppAuth.getInstance()
+    val data: LiveData<FeedModel> = auth
         .authStateFlow
         .flatMapLatest { (myId, _) ->
             repository.data

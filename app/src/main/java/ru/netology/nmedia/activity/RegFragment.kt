@@ -16,16 +16,23 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.R
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.databinding.FragmentRegBinding
 import ru.netology.nmedia.utils.Utils
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import java.io.File
+import javax.inject.Inject
 
+
+@AndroidEntryPoint
 class RegFragment : Fragment() {
 
     private val avatarRequestCode = 1
+
+    @Inject
+    lateinit var auth: AppAuth
 
     private val viewModel: AuthViewModel by viewModels(
         ownerProducer = ::requireParentFragment
@@ -108,7 +115,7 @@ class RegFragment : Fragment() {
                 Utils.hideKeyboard(requireView())
             } else {
                 onCreateDialog().show()
-                AppAuth.getInstance().setAuth(state.user.id, state.user.token)
+                auth.setAuth(state.user.id, state.user.token)
                 findNavController().navigateUp()
                 Utils.hideKeyboard(requireView())
             }

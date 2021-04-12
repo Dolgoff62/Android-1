@@ -1,6 +1,7 @@
 package ru.netology.nmedia.activity
 
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,13 +9,20 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.R
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.databinding.FragmentAuthBinding
 import ru.netology.nmedia.utils.Utils
 import ru.netology.nmedia.viewmodel.AuthViewModel
+import javax.inject.Inject
 
+
+@AndroidEntryPoint
 class AuthFragment : Fragment() {
+
+    @Inject
+    lateinit var auth: AppAuth
 
     private val viewModel: AuthViewModel by viewModels(
         ownerProducer = ::requireParentFragment
@@ -48,7 +56,7 @@ class AuthFragment : Fragment() {
                     .show()
                 Utils.hideKeyboard(requireView())
             } else {
-                AppAuth.getInstance().setAuth(state.user.id, state.user.token)
+                auth.setAuth(state.user.id, state.user.token)
                 findNavController().navigateUp()
                 Utils.hideKeyboard(requireView())
             }

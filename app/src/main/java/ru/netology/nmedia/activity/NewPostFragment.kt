@@ -17,6 +17,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.R
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.databinding.FragmentNewPostBinding
@@ -24,8 +25,10 @@ import ru.netology.nmedia.utils.Utils
 import ru.netology.nmedia.viewmodel.CardViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 import java.io.File
+import javax.inject.Inject
 
 
+@AndroidEntryPoint
 class NewPostFragment : Fragment() {
 
     private val photoRequestCode = 1
@@ -34,6 +37,9 @@ class NewPostFragment : Fragment() {
     companion object {
         var Bundle.textArg: String? by Utils.StringArg
     }
+
+    @Inject
+    lateinit var auth: AppAuth
 
     private val viewModel: PostViewModel by viewModels(
         ownerProducer = ::requireParentFragment
@@ -81,7 +87,7 @@ class NewPostFragment : Fragment() {
         builder.setView(R.layout.custom_dialog_exit_warning)
         builder.setIcon(R.drawable.ic_baseline_logout_24)
         builder.setPositiveButton("Yes") { _: DialogInterface, _: Int ->
-            AppAuth.getInstance().removeAuth()
+            auth.removeAuth()
             findNavController().navigateUp()
         }
         builder.setNegativeButton("Cancel") { dialog, _ ->

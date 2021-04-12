@@ -2,8 +2,10 @@ package ru.netology.nmedia.viewmodel
 
 import android.net.Uri
 import androidx.lifecycle.*
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import ru.netology.nmedia.api.PostApi
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.auth.AuthState
 import ru.netology.nmedia.dto.MediaUpload
@@ -13,19 +15,22 @@ import ru.netology.nmedia.repository.UserRepositoryImpl
 import ru.netology.nmedia.util.SingleLiveEvent
 import ru.netology.nmedia.utils.Utils
 import java.io.File
+import javax.inject.Inject
 
-class AuthViewModel : ViewModel() {
 
-    private val repository: UserRepository = UserRepositoryImpl()
+@HiltViewModel
+class AuthViewModel @Inject constructor(private val auth: AppAuth, postApi: PostApi) : ViewModel() {
+
+    private val repository: UserRepository = UserRepositoryImpl(postApi)
 
     private val noAvatar = AvatarModel()
 
-    val data: LiveData<AuthState> = AppAuth.getInstance()
+    val data: LiveData<AuthState> = auth
         .authStateFlow
         .asLiveData(Dispatchers.Default)
 
     val authenticated: Boolean
-        get() = AppAuth.getInstance().authStateFlow.value.id != 0L
+        get() = auth.authStateFlow.value.id != 0L
 
     private val _user = SingleLiveEvent<UserModel>()
     val user: LiveData<UserModel>

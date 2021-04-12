@@ -11,17 +11,18 @@ import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentPostCardBinding
 import ru.netology.nmedia.dto.Attachment
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.model.AttachmentType
 import ru.netology.nmedia.utils.Utils
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.CardViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 
+@AndroidEntryPoint
 class PostCardFragment : Fragment() {
 
     private val viewModel: PostViewModel by viewModels(
