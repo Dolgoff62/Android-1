@@ -12,5 +12,6 @@ class DependencyWorkerFactory @Inject constructor(
     init {
         addFactory(RefreshPostsWorkerFactory(repository))
         addFactory(SavePostsWorkerFactory(repository))
+        addFactory(DeletePostsWorkerFactory(repository))
     }
 }
