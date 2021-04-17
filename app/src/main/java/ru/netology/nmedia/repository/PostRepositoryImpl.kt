@@ -3,6 +3,9 @@ package ru.netology.nmedia.repository
 import android.net.Uri
 import androidx.core.net.toFile
 import androidx.core.net.toUri
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -17,6 +20,7 @@ import ru.netology.nmedia.dto.Media
 import ru.netology.nmedia.dto.MediaUpload
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.entity.*
+import ru.netology.nmedia.error.*
 import ru.netology.nmedia.model.*
 import java.sql.SQLException
 import javax.inject.Inject
@@ -28,11 +32,20 @@ class PostRepositoryImpl @Inject constructor(
     private val postWorkerDao: PostWorkerDao,
     private val postApi: PostApi
 ) : PostRepository {
-    override val data = dao.getAll().map(List<PostEntity>::toDto).flowOn(Dispatchers.Default)
+
+
+    override val dataPaging: Flow<PagingData<Post>> = Pager(
+        config = PagingConfig(pageSize = 5, enablePlaceholders = false),
+        pagingSourceFactory = { PostPagingSource(postApi) }
+    ).flow
+
+    override val dataPosts = dao.getAll()
+        .map(List<PostEntity>::toDto)
+        .flowOn(Dispatchers.Default)
 
     override fun getNewerCount(id: Long): Flow<Int> = flow {
         while (true) {
-            delay(10_000L)
+            delay(180_000L)
             val response = postApi.getNewer(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
@@ -154,38 +167,36 @@ class PostRepositoryImpl @Inject constructor(
     }
 
 
-    override suspend fun likeById(id: Long) {
-        dao.likeById(id)
-
+    override suspend fun likeById(id: Long): Post =
         try {
-            val response = postApi.likeById(id)
-            if (!response.isSuccessful) {
-                throw ApiError(response.code(), response.message())
+            dao.likeById(id).let {
+                val response = postApi.likeById(id)
+                if (!response.isSuccessful) {
+                    throw ApiError(response.code(), response.message())
+                }
+                response.body() ?: throw ApiError(response.code(), response.message())
             }
-            response.body() ?: throw ApiError(response.code(), response.message())
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
             throw UnknownError
         }
-    }
 
-    override suspend fun unlikeById(id: Long) {
-        dao.likeById(id)
-
+    override suspend fun unlikeById(id: Long): Post =
         try {
-            val response = postApi.unlikeById(id)
-            if (!response.isSuccessful) {
-                throw ApiError(response.code(), response.message())
+            dao.likeById(id).let {
+                val response = postApi.unlikeById(id)
+                if (!response.isSuccessful) {
+                    throw ApiError(response.code(), response.message())
+                }
+                response.body() ?: throw ApiError(response.code(), response.message())
             }
-
-            response.body() ?: throw ApiError(response.code(), response.message())
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
             throw UnknownError
         }
-    }
+
 
     override suspend fun deleteById(id: Long) {
         try {

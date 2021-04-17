@@ -4,23 +4,23 @@ import android.app.Application
 import android.net.Uri
 import androidx.core.net.toFile
 import androidx.lifecycle.*
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
 import androidx.work.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.auth.AppAuth
-import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.MediaUpload
+import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.FeedModel
 import ru.netology.nmedia.model.FeedModelState
 import ru.netology.nmedia.model.PhotoModel
 import ru.netology.nmedia.repository.PostRepository
-import ru.netology.nmedia.repository.PostRepositoryImpl
 import ru.netology.nmedia.util.SingleLiveEvent
 import ru.netology.nmedia.utils.Utils
 import ru.netology.nmedia.work.DeletePostWorker
@@ -35,13 +35,13 @@ private val noPhoto = PhotoModel()
 class PostViewModel @Inject constructor(
     private val repository: PostRepository,
     private val workManager: WorkManager,
-    auth: AppAuth
-) : ViewModel() {
+    auth: AppAuth,
+    application: Application
+) : AndroidViewModel(application) {
 
-    val data: LiveData<FeedModel> = auth
-        .authStateFlow
+    private val dataPosts: LiveData<FeedModel> = auth.authStateFlow
         .flatMapLatest { (myId, _) ->
-            repository.data
+            repository.dataPosts
                 .map { posts ->
                     FeedModel(
                         posts.map { it.copy(ownedByMe = it.authorId == myId) },
@@ -50,11 +50,27 @@ class PostViewModel @Inject constructor(
                 }
         }.asLiveData(Dispatchers.Default)
 
+    private val liked = MutableStateFlow<Map<Long, Post>>(mapOf())
+
+    val dataPaging: Flow<PagingData<Post>> = auth.authStateFlow
+        .flatMapLatest { (myId, _) ->
+            liked.tryEmit(emptyMap())
+            repository.dataPaging
+                .cachedIn(viewModelScope)
+                .combine(liked) { pagingData, liked ->
+                    pagingData.map { post ->
+                        (liked[post.id] ?: post).copy(
+                            ownedByMe = post.authorId == myId
+                        )
+                    }
+                }
+        }
+
     private val _dataState = MutableLiveData<FeedModelState>()
     val dataState: LiveData<FeedModelState>
         get() = _dataState
 
-    val newerCount: LiveData<Int> = data.switchMap {
+    val newerCount: LiveData<Int> = dataPosts.switchMap {
         repository.getNewerCount(it.posts.firstOrNull()?.id ?: 0L)
             .catch { e -> e.printStackTrace() }
             .asLiveData()
@@ -86,16 +102,6 @@ class PostViewModel @Inject constructor(
 
     fun makeReadPosts() = CoroutineScope(Dispatchers.IO).launch {
         repository.markPostToShow()
-    }
-
-    fun refreshPosts() = viewModelScope.launch {
-        try {
-            _dataState.value = FeedModelState(refreshing = true)
-            repository.getAll()
-            _dataState.value = FeedModelState()
-        } catch (e: Exception) {
-            _dataState.value = FeedModelState(error = true)
-        }
     }
 
     fun postCreation() {
@@ -146,12 +152,12 @@ class PostViewModel @Inject constructor(
 
     fun likeById(id: Long) {
         edited.value?.let {
-
             _postCreated.value = Unit
             viewModelScope.launch {
                 try {
-                    repository.likeById(id)
+                    val newPost = repository.likeById(id)
                     _dataState.value = FeedModelState()
+                    liked.tryEmit(liked.value + (newPost.id to newPost))
                 } catch (e: Exception) {
                     _dataState.value = FeedModelState(error = true)
                 }
@@ -165,8 +171,9 @@ class PostViewModel @Inject constructor(
             _postCreated.value = Unit
             viewModelScope.launch {
                 try {
-                    repository.unlikeById(id)
+                    val newPost = repository.unlikeById(id)
                     _dataState.value = FeedModelState()
+                    liked.tryEmit(liked.value + (newPost.id to newPost))
                 } catch (e: Exception) {
                     _dataState.value = FeedModelState(error = true)
                 }
@@ -175,10 +182,13 @@ class PostViewModel @Inject constructor(
         edited.value = Utils.EmptyPost.empty
     }
 
+    private val _postDelete = SingleLiveEvent<Boolean>()
+    val postDelete: LiveData<Boolean>
+        get() = _postDelete
+
     fun deleteById(id: Long) = viewModelScope.launch {
         try {
             val data = workDataOf(DeletePostWorker.postKey to id)
-
             val constraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
@@ -188,7 +198,7 @@ class PostViewModel @Inject constructor(
                 .build()
 
             workManager.enqueue(request)
-            loadPosts()
+            _postDelete.value = true
             _dataState.value = FeedModelState()
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = true)

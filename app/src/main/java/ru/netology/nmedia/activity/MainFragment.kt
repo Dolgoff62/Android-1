@@ -7,12 +7,15 @@ import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collectLatest
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.OnItemClickListener
 import ru.netology.nmedia.adapter.PostAdapter
@@ -24,6 +27,7 @@ import ru.netology.nmedia.viewmodel.PostViewModel
 import javax.inject.Inject
 
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @AndroidEntryPoint
 @Suppress("DUPLICATE_LABEL_IN_WHEN")
 class MainFragment : Fragment() {
@@ -85,13 +89,6 @@ class MainFragment : Fragment() {
             container,
             false
         )
-
-        binding.swiperefresh.setOnRefreshListener {
-            if (!binding.progress.isAnimating) {
-                viewModel.loadPosts()
-            }
-            binding.swiperefresh.isRefreshing = false
-        }
 
         val adapter = PostAdapter(object : OnItemClickListener {
 
@@ -181,10 +178,20 @@ class MainFragment : Fragment() {
             }
         })
 
-        viewModel.data.observe(viewLifecycleOwner, { state ->
-            adapter.submitList(state.posts)
-            binding.emptyText.isVisible = state.empty
-        })
+        lifecycleScope.launchWhenCreated {
+            viewModel.dataPaging.collectLatest(adapter::submitData)
+        }
+
+        lifecycleScope.launchWhenCreated {
+            adapter.loadStateFlow.collectLatest { state ->
+                binding.swiperefresh.isRefreshing =
+                    state.refresh is LoadState.Loading ||
+                            state.prepend is LoadState.Loading ||
+                            state.append is LoadState.Loading
+            }
+        }
+
+        binding.swiperefresh.setOnRefreshListener(adapter::refresh)
 
         viewModel.newerCount.observe(viewLifecycleOwner, { state ->
             when {
@@ -193,10 +200,18 @@ class MainFragment : Fragment() {
             }
         })
 
+        viewModel.postDelete.observe(viewLifecycleOwner, { state ->
+            if(state) {
+                adapter.refresh()
+                Snackbar.make(binding.root, getString(R.string.post_deleted), Snackbar.LENGTH_LONG)
+                    .show()
+            }
+        })
+
         binding.newPostsChip.setOnClickListener {
             viewModel.run {
                 makeReadPosts()
-                loadPosts()
+                reloadFeed(adapter)
             }
             binding.rvPosts.smoothSnapToPosition(0)
             it.visibility = View.GONE
@@ -231,4 +246,5 @@ class MainFragment : Fragment() {
         smoothScroller.targetPosition = position
         layoutManager?.startSmoothScroll(smoothScroller)
     }
+    private fun reloadFeed(adapter: PostAdapter) = adapter.refresh()
 }

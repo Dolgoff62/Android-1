@@ -9,10 +9,8 @@ import ru.netology.nmedia.api.PostApi
 import ru.netology.nmedia.dto.AuthUser
 import ru.netology.nmedia.dto.Media
 import ru.netology.nmedia.dto.MediaUpload
-import ru.netology.nmedia.model.ApiError
-import ru.netology.nmedia.model.AppError
-import ru.netology.nmedia.model.NetworkError
-import ru.netology.nmedia.model.UnknownError
+import ru.netology.nmedia.error.*
+import ru.netology.nmedia.error.NetworkError
 import javax.inject.Inject
 import javax.inject.Singleton
 

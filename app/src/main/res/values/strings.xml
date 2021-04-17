@@ -69,4 +69,5 @@
     <string name="server_error_string">There was a problem on the server</string>
     <string name="notification_for_user">User with id: %1$s get notification: %2$s</string>
     <string name="notification_for_all">%1$s</string>
+    <string name="post_deleted">Post has deleted</string>
 </resources>

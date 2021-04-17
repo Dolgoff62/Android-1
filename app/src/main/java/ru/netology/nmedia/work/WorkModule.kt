@@ -13,8 +13,9 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Module
 object WorkModule {
-    @Provides
+
     @Singleton
+    @Provides
     fun provideWorkManager(
         @ApplicationContext context: Context,
         workerFactory: DependencyWorkerFactory,

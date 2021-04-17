@@ -1,18 +1,22 @@
 package ru.netology.nmedia.work
 
 import android.content.Context
+import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
-import ru.netology.nmedia.db.AppDb
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import ru.netology.nmedia.repository.PostRepository
-import ru.netology.nmedia.repository.PostRepositoryImpl
 import javax.inject.Inject
 import javax.inject.Singleton
 
-class SavePostWorker(
+@HiltWorker
+class SavePostWorker @AssistedInject constructor(
+    @Assisted
     appContext: Context,
+    @Assisted
     params: WorkerParameters,
     private val repository: PostRepository
 ) : CoroutineWorker(appContext, params) {
@@ -50,4 +54,3 @@ class SavePostsWorkerFactory @Inject constructor(
             null
     }
 }
-
