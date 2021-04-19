@@ -10,6 +10,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import ru.netology.nmedia.dao.PostRemoteKeyDao
 import ru.netology.nmedia.repository.PostRepository
 import javax.inject.Inject
 import javax.inject.Singleton

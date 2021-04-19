@@ -28,10 +28,6 @@ class NMediaApplication : Application(), Configuration.Provider {
     @Inject
     lateinit var workerFactory: DependencyWorkerFactory
 
-    init {
-        DeletePostWorker
-    }
-
     override fun getWorkManagerConfiguration() =
         Configuration.Builder()
             .setWorkerFactory(workerFactory)
@@ -41,11 +37,29 @@ class NMediaApplication : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
         setupAuth()
+        setupWork()
     }
 
     private fun setupAuth() {
         appScope.launch {
             auth.sendPushToken()
+        }
+    }
+
+    private fun setupWork() {
+        appScope.launch {
+
+            val constrains = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
+            val request = PeriodicWorkRequestBuilder<RefreshPostsWorker>(15, TimeUnit.MINUTES)
+                .setConstraints(constrains)
+                .build()
+            workManager.enqueueUniquePeriodicWork(
+                RefreshPostsWorker.name,
+                ExistingPeriodicWorkPolicy.KEEP,
+                request
+            )
         }
     }
 }

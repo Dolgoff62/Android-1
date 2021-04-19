@@ -59,8 +59,8 @@ dependencies {
     def retrofit_version = "2.9.0"
     def retrofitgson_version = "2.9.0"
     def okhttploggin_version = '5.0.0-alpha.2'
-    def room_version = "2.2.6"
-    def coroutines_version = "1.4.2"
+    def room_version = "2.3.0-rc01"
+    def coroutines_version = "1.4.3"
     def imagepicker_version = "1.8"
     def workmanager_version = "2.5.0"
     def hilt_viewmodel_version = "1.0.0-alpha03"
