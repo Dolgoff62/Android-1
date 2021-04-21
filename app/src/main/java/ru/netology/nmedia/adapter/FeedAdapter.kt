@@ -21,7 +21,7 @@ interface OnItemClickListener {
     fun onPhoto(post: Post) {}
 }
 
-class PostAdapter(
+class FeedAdapter(
     private val onItemClickListener: OnItemClickListener
 ) : PagingDataAdapter<Post, PostViewHolder>(PostDiffCallback()) {
 
