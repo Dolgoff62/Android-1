@@ -70,5 +70,4 @@
     <string name="notification_for_user">Пользователю с id: %1$s пришло уведомление: %2$s</string>
     <string name="notification_for_all">%1$s</string>
     <string name="post_deleted">Пост был успешно удален</string>
-    <string name="ad_description">Реклама</string>
 </resources>

@@ -2,18 +2,8 @@ package ru.netology.nmedia.dto
 
 import com.google.gson.annotations.SerializedName
 
-sealed class FeedItem{
-    abstract val id: Long
-}
-
-data class Ad(
-    override val id: Long,
-    val url: String,
-    val image: String,
-) : FeedItem()
-
 data class Post(
-    override val id: Long,
+    val id: Long,
     val authorId: Long,
     val author: String,
     val authorAvatar: String,
@@ -27,4 +17,4 @@ data class Post(
     val newPost: Boolean = false,
     val ownedByMe: Boolean = false,
     val attachment: Attachment? = null
-) : FeedItem()
+)
