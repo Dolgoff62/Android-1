@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -17,8 +18,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import ru.netology.nmedia.R
+import ru.netology.nmedia.adapter.FeedAdapter
 import ru.netology.nmedia.adapter.OnItemClickListener
-import ru.netology.nmedia.adapter.PostAdapter
+import ru.netology.nmedia.adapter.PagingLoadStateAdapter
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.databinding.FragmentMainBinding
 import ru.netology.nmedia.dto.Post
@@ -90,7 +92,7 @@ class MainFragment : Fragment() {
             false
         )
 
-        val adapter = PostAdapter(object : OnItemClickListener {
+        val adapter = FeedAdapter(object : OnItemClickListener {
 
             override fun onLike(post: Post) {
                 if (authViewModel.authenticated) {
@@ -163,7 +165,21 @@ class MainFragment : Fragment() {
             }
         })
 
-        binding.rvPosts.adapter = adapter
+        val pagingLoadStateListener = object : PagingLoadStateAdapter.OnInteractionListener {
+            override fun onRetry() {
+                adapter.retry()
+            }
+        }
+
+        binding.rvPosts.adapter = adapter.withLoadStateHeaderAndFooter(
+            header = PagingLoadStateAdapter(pagingLoadStateListener),
+            footer = PagingLoadStateAdapter(pagingLoadStateListener)
+        )
+
+        binding.rvPosts.addItemDecoration(
+            DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
+        )
+
         viewModel.dataState.observe(viewLifecycleOwner, { state ->
             binding.progress.isVisible = state.loading
             binding.swiperefresh.isRefreshing = state.refreshing
@@ -185,9 +201,7 @@ class MainFragment : Fragment() {
         lifecycleScope.launchWhenCreated {
             adapter.loadStateFlow.collectLatest { state ->
                 binding.swiperefresh.isRefreshing =
-                    state.refresh is LoadState.Loading ||
-                            state.prepend is LoadState.Loading ||
-                            state.append is LoadState.Loading
+                    state.refresh is LoadState.Loading
             }
         }
 
@@ -246,5 +260,5 @@ class MainFragment : Fragment() {
         smoothScroller.targetPosition = position
         layoutManager?.startSmoothScroll(smoothScroller)
     }
-    private fun reloadFeed(adapter: PostAdapter) = adapter.refresh()
+    private fun reloadFeed(adapter: FeedAdapter) = adapter.refresh()
 }
