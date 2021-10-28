@@ -4,8 +4,10 @@ import android.app.Application
 import android.net.Uri
 import androidx.core.net.toFile
 import androidx.lifecycle.*
+import androidx.lifecycle.Transformations.map
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.insertSeparators
 import androidx.paging.map
 import androidx.work.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,6 +17,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.auth.AppAuth
+import ru.netology.nmedia.dto.Ad
+import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.MediaUpload
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.FeedModel
@@ -27,6 +31,7 @@ import ru.netology.nmedia.work.DeletePostWorker
 import ru.netology.nmedia.work.SavePostWorker
 import java.io.File
 import javax.inject.Inject
+import kotlin.random.Random
 
 private val noPhoto = PhotoModel()
 
@@ -38,6 +43,22 @@ class PostViewModel @Inject constructor(
     auth: AppAuth,
     application: Application
 ) : AndroidViewModel(application) {
+
+    private val cached: Flow<PagingData<FeedItem>> = repository
+        .dataPaging
+        .map { pagingData ->
+            pagingData.insertSeparators(
+                generator = { before, after ->
+                    if (before?.id?.rem(5) != 0L) null else
+                        Ad(
+                            Random.nextLong(),
+                            "https://netology.ru",
+                            "figma.jpg"
+                        )
+                }
+            )
+        }
+        .cachedIn(viewModelScope)
 
     private val dataPosts: LiveData<FeedModel> = auth.authStateFlow
         .flatMapLatest { (myId, _) ->
@@ -52,16 +73,19 @@ class PostViewModel @Inject constructor(
 
     private val liked = MutableStateFlow<Map<Long, Post>>(mapOf())
 
-    val dataPaging: Flow<PagingData<Post>> = auth.authStateFlow
+    val dataPaging: Flow<PagingData<FeedItem>> = auth.authStateFlow
         .flatMapLatest { (myId, _) ->
             liked.tryEmit(emptyMap())
-            repository.dataPaging
+            cached
                 .cachedIn(viewModelScope)
                 .combine(liked) { pagingData, liked ->
-                    pagingData.map { post ->
-                        (liked[post.id] ?: post).copy(
-                            ownedByMe = post.authorId == myId
-                        )
+                    pagingData.map { feedItem ->
+                        if (feedItem is Post) {
+                            (liked[feedItem.id] ?: feedItem)
+                                .copy(ownedByMe = feedItem.authorId == myId)
+                        } else {
+                            feedItem
+                        }
                     }
                 }
         }
